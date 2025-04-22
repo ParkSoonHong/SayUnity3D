@@ -7,6 +7,11 @@ public class PlayerSO : ScriptableObject
     public float MaxRunSpeed = 12;
     public float RunAcceleration = 5f;
     public float JumpPower = 5;
+    public int MaxJumpCount = 2;
+    public float MaxStamina = 10;
+    public float StaminaRecoverySpeed = 1;
 
-   
+    // 스테미나 감소량
+    public float MoveActionStaminaAmount = 0.5f;
+    public float RollStaminaAmout = 3f;
 }

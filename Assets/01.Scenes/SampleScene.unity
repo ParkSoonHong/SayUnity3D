@@ -1555,7 +1555,8 @@ GameObject:
   - component: {fileID: 1815887261}
   - component: {fileID: 1815887260}
   - component: {fileID: 1815887259}
-  - component: {fileID: 1815887263}
+  - component: {fileID: 1815887265}
+  - component: {fileID: 1815887266}
   - component: {fileID: 1815887262}
   - component: {fileID: 1815887264}
   m_Layer: 0
@@ -1648,27 +1649,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   RotationSpeed: 250
---- !u!114 &1815887263
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1815887257}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c81aa67925d2eed41acb4d1b8575eec7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  MoveSpeed: 7
-  MaxRunSpeed: 12
-  RunAcceleration: 5
-  JumpPower: 5
-  RollTimer: 1
-  MaxStamina: 10
-  RecoverySpeed: 1
-  RunStaminaAmount: 0.01
-  MaxJumpCount: 2
 --- !u!143 &1815887264
 CharacterController:
   m_ObjectHideFlags: 0
@@ -1694,6 +1674,41 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1815887265
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1815887257}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20feea678d20436409e76e50ef0ca027, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MoveSpeed: 7
+  MaxRunSpeed: 12
+  RunAcceleration: 5
+  JumpPower: 5
+  MaxJumpCount: 2
+  MaxStamina: 10
+  StaminaRecoverySpeed: 1
+  MoveActionStaminaAmount: 0.5
+  RollStaminaAmout: 3
+  _playerData: {fileID: 11400000, guid: 64a1480661363b641b656b229828bc29, type: 2}
+--- !u!114 &1815887266
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1815887257}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11c7cb9a82de3fb418ba051fd370a9e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  RollTimer: 1
 --- !u!1 &1906927200
 GameObject:
   m_ObjectHideFlags: 0
