@@ -26,6 +26,11 @@ public class Player : MonoBehaviour
     public float MoveActionStaminaAmount = 0.5f;
     public float RollStaminaAmout = 3f;
 
+    // 파이어 관련
+    public int MaxBombCount = 3;
+    public int MaxBulletCount = 50;
+    public float MaxThroPower = 30;
+
     [SerializeField] private PlayerSO _playerData;
     private void Awake()
     {
@@ -44,5 +49,9 @@ public class Player : MonoBehaviour
         StaminaRecoverySpeed = _playerData.StaminaRecoverySpeed;
         MoveActionStaminaAmount = _playerData.MoveActionStaminaAmount;
         RollStaminaAmout = _playerData.RollStaminaAmout;
+
+        MaxBombCount = _playerData.BombCount;
+        MaxBulletCount = _playerData.MaxBulletCount;
+        MaxThroPower = _playerData.MaxThroPower;
     }
 }

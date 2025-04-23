@@ -14,4 +14,9 @@ public class PlayerSO : ScriptableObject
     // 스테미나 감소량
     public float MoveActionStaminaAmount = 0.5f;
     public float RollStaminaAmout = 3f;
+
+    // 총
+    public int BombCount = 3;
+    public int MaxBulletCount = 50;
+    public float MaxThroPower = 30;
 }
