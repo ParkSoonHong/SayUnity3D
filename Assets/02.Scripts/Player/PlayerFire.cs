@@ -24,6 +24,8 @@ public class PlayerFire : MonoBehaviour
     private int _bulletCount;
     private int _bombCount;
 
+    public int Damage = 10;
+
     public ParticleSystem BulletEffectPrefab;
 
     public float FireCoolTime = 0.2f;
@@ -172,6 +174,17 @@ public class PlayerFire : MonoBehaviour
 
             UI_Manager.Instance.UpdateBullet(_bulletCount, _player.MaxBulletCount);
             _timar = 0;
+            if(hitInfo.collider.gameObject.CompareTag("Enemy"))
+            {
+                Enemy enemy = hitInfo.collider.GetComponent<Enemy>();
+
+                Damage damage = new Damage();
+                damage.Value = Damage;
+                damage.From = this.gameObject;
+
+                enemy.TakeDamage(damage);
+
+            }
         }
     }
 

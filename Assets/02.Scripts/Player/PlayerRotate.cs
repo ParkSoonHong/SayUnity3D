@@ -8,11 +8,13 @@ public class PlayerRotate : MonoBehaviour
 
     void Update()
     {
-        // 1. ¸¶¿ì½º ÀÔ·ÂÀ» ¹Ş´Â´Ù.
+        
+        // 1. ë§ˆìš°ìŠ¤ ì…ë ¥ì„ ë°›ëŠ”ë‹¤.
         float mouseX = Input.GetAxis("Mouse X");
 
-        // 2. È¸ÀüÇÑ ¾ç¸¸Å­ ´©Àû½ÃÄÑ ³ª°£´Ù.
+        // 2. íšŒì „í•œ ì–‘ë§Œí¼ ëˆ„ì ì‹œì¼œ ë‚˜ê°„ë‹¤.
         _rotationX += mouseX * RotationSpeed * Time.deltaTime;
         transform.eulerAngles = new Vector3(0, _rotationX, 0);
+        
     }
 }

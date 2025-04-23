@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 public class CameraRotate : MonoBehaviour
 {
@@ -11,9 +11,40 @@ public class CameraRotate : MonoBehaviour
     // 카메라 각도는 0도에서 부터 시작한다고 기준을 세운다.
     private float _rotationX = 0;
     private float _rotationY = 0;
+
+    private CameraFollow _cameraFollow;
+
+    private void Awake()
+    {
+        _cameraFollow = GetComponent<CameraFollow>();
+    }
+
     private void Update()
     {
-      // 1. 마우스 입력을 받는다.
+        switch(_cameraFollow.CamPosCount)
+        {
+            case 0:
+                {
+                    FPSView();
+                    break;
+                }
+            case 1:
+                {
+                    TPSView();
+                    break;
+                }
+            case 2:
+                {
+                    QuarterView();
+                    break;
+                }
+        }
+     
+    }
+
+    private void FPSView()
+    {
+        // 1. 마우스 입력을 받는다.
         float mouseX = Input.GetAxis("Mouse X");
         float mouseY = Input.GetAxis("Mouse Y");
 
@@ -22,9 +53,17 @@ public class CameraRotate : MonoBehaviour
         _rotationY += -mouseY * RotationSpeed * Time.deltaTime;
         _rotationY = Mathf.Clamp(_rotationY, -90.0f, 90.0f);
 
-        transform.eulerAngles = new Vector3(_rotationY,_rotationX,0);
+        transform.eulerAngles = new Vector3(_rotationY, _rotationX, 0);
     }
 
+    private void TPSView()
+    {
+        return;
+    }
 
+    private void QuarterView()
+    {
+        return;
+    }
 
 }
