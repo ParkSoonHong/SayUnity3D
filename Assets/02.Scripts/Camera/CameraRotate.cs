@@ -11,7 +11,6 @@ public class CameraRotate : MonoBehaviour
     // 카메라 각도는 0도에서 부터 시작한다고 기준을 세운다.
     private float _rotationX = 0;
     private float _rotationY = 0;
-
     private CameraFollow _cameraFollow;
 
     private void Awake()
@@ -59,6 +58,8 @@ public class CameraRotate : MonoBehaviour
     private void TPSView()
     {
         return;
+     
+        
     }
 
     private void QuarterView()

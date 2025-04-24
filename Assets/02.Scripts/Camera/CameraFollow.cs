@@ -4,21 +4,26 @@ using static UnityEngine.GraphicsBuffer;
 public class CameraFollow : MonoBehaviour
 {
     public Transform FPSCamPOS;
+    public Transform TPSCamPOS;
 
-    public float followSmooth = 0.2f;
+    public float FollowSmooth = 0.2f;
 
     private int _camPosCount = 0;
     public int CamPosCount => _camPosCount;
 
     public Vector3 TPSViewOffset = new Vector3(0, 2, -4);
     public Vector3 QuarterViewOffset = new Vector3(0, 10, -10);
-    public float moveSmooth = 0.1f;
+    public float MoveSmooth = 0.1f;
   
-    private Vector3 currentVelocity;
-    public float rotateSpeed = 150f;
+    public float RotateSpeed = 150f;
+    public float SmoothTime = 0.15f;             // 위치 부드러움
+    public float MinPitch = -30f;
+    public float MaxPitch = 60f; // 피치 제한
 
-    private Vector3 velocityXZ;
-    private float velocityY;
+    private Vector3 _velocity = Vector3.zero;     // 위치 보간용
+    private float _yaw = 0f;
+    private float _pitch = 10f;         // 누적 각도
+
 
     private void LateUpdate()
     {
@@ -71,41 +76,46 @@ public class CameraFollow : MonoBehaviour
         transform.position = FPSCamPOS.position;
     }
 
-    public float smoothTime = 0.15f;             // 위치 부드러움
-    public float minPitch = -30f, maxPitch = 60f; // 피치 제한
 
-    private Vector3 velocity = Vector3.zero;     // 위치 보간용
-    private float yaw = 0f, pitch = 10f;         // 누적 각도
 
     private void TPSView()
     {
         // 1) 마우스 입력
         float mouseX = Input.GetAxis("Mouse X");
-        float mouseY = Input.GetAxis("Mouse Y");  // :contentReference[oaicite:8]{index=8}
+        float mouseY = Input.GetAxis("Mouse Y");  
 
         // 2) 누적 회전값 업데이트
-        yaw += mouseX * rotateSpeed * Time.deltaTime;
-        pitch -= mouseY * rotateSpeed * Time.deltaTime;
-        pitch = Mathf.Clamp(pitch, minPitch, maxPitch); // 피치 클램프 :contentReference[oaicite:9]{index=9}
+        _yaw += mouseX * RotateSpeed * Time.deltaTime;
+        _pitch += mouseY * RotateSpeed * Time.deltaTime;
+        _pitch = Mathf.Clamp(_pitch, MinPitch, MaxPitch); 
 
         // 3) 사구면 좌표로 오프셋 회전
-        Quaternion rot = Quaternion.Euler(pitch, yaw, 0f);
-        Vector3 desiredPos = FPSCamPOS.position + rot * TPSViewOffset;
+        Quaternion rot = Quaternion.Euler(_pitch, _yaw, 0f);
+        Vector3 desiredPos = TPSCamPOS.position + rot * TPSViewOffset;
 
+        // 4) 위치 즉시 적용
+        transform.position = desiredPos;
+
+        // 5) 캐릭터 바라보도록 회전 즉시 적용
+        transform.rotation = Quaternion.LookRotation(TPSCamPOS.position - transform.position);
+
+        /*
         // 4) 부드러운 위치 보간
         transform.position = Vector3.SmoothDamp(
             transform.position, desiredPos,
-            ref velocity, smoothTime    // :contentReference[oaicite:10]{index=10}
+            ref _velocity, SmoothTime  
         );
 
         // 5) 캐릭터 바라보도록 회전
         Quaternion targetRot = Quaternion.LookRotation(
-            FPSCamPOS.position - transform.position
-        );                                // :contentReference[oaicite:11]{index=11}
+            TPSCamPOS.position - transform.position
+        );                              
+
         transform.rotation = Quaternion.Slerp(
             transform.rotation, targetRot,
-            rotateSpeed * Time.deltaTime
+            RotateSpeed * Time.deltaTime
         );
+        */
     }
 
 
@@ -116,7 +126,7 @@ public class CameraFollow : MonoBehaviour
         // 부드러운 위치 보간
         transform.position = Vector3.Lerp(
             transform.position, targetPos,
-            followSmooth
+            FollowSmooth
         );
     }
 }

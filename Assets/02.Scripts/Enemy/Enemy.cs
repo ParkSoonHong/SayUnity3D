@@ -1,27 +1,28 @@
 using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.AI;
 
-
-
-public class Enemy : MonoBehaviour
+public enum EnemyState
 {
-    public enum EnemyState
-    {
-        Idle,
-        Trace,
-        Return,
-        Attack,
-        Damaged,
-        Patrol,
-        Die,
-    }
+    Idle,
+    Trace,
+    Return,
+    Attack,
+    Damaged,
+    Patrol,
+    Die,
+}
 
+
+public class Enemy : MonoBehaviour, IDamageAble
+{
     public EnemyState CurrentState = EnemyState.Idle;
 
-    private GameObject _player;
+    protected GameObject _player;
     private CharacterController _characterController;
     private Vector3 _startPosition;
+    protected NavMeshAgent _agent;
 
     public float FindDistance = 7f;
     public float AttackDistance = 2f;
@@ -33,7 +34,6 @@ public class Enemy : MonoBehaviour
 
     public int Health = 100;
     public float DamagedTime = 0.5f;
-    private float _damagedTimer = 0f;
 
     public float PatrolTime = 2f;
     private float _patrolTimer = 0f;
@@ -47,6 +47,8 @@ public class Enemy : MonoBehaviour
         _startPosition = transform.position;
         _player = GameObject.FindGameObjectWithTag("Player");
         _characterController = GetComponent<CharacterController>();
+        _agent = GetComponent<NavMeshAgent>();
+        _agent.speed = MoveSpeed;
     }
 
 
@@ -84,6 +86,8 @@ public class Enemy : MonoBehaviour
 
     public void TakeDamage(Damage damage)
     {
+        _agent.isStopped = true;
+        _agent.ResetPath();
         Vector3 dir = (damage.From.transform.position - transform.position) * -1;
         dir.Normalize();
         _patrolTimer = 0;
@@ -106,10 +110,10 @@ public class Enemy : MonoBehaviour
         StartCoroutine(Damaged_Coroutine());
     }
 
-    private void Idle()
+    protected void Idle()
     {
 
-        if (FindTarget()) return;
+        if (TryFindTarget()) return;
 
         _patrolTimer += Time.deltaTime;
         if(_patrolTimer >= PatrolTime)
@@ -119,64 +123,64 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    private void Trace()
+    protected void Trace()
     {
 
-        if(ReturnPoint()) return;
+        if(TryReturnPoint()) return;
 
         if (Vector3.Distance(transform.position, _player.transform.position) < AttackDistance)
         {
-            Debug.Log("상태전환: Trace -> Attack");
+            
             SetState( EnemyState.Attack);
             return;
         }
 
-        Vector3 dir = (_player.transform.position - transform.position).normalized;
-        transform.LookAt(_player.transform);
-        _characterController.Move(dir * MoveSpeed * Time.deltaTime);
+        //Vector3 dir = (_player.transform.position - transform.position).normalized;
+        //transform.LookAt(_player.transform);
+        //_characterController.Move(dir * MoveSpeed * Time.deltaTime);
+        _agent.SetDestination(_player.transform.position);
 
     }
 
-    private void Patrol()
+    protected void Patrol()
     {
-        if (FindTarget()) return;
+        if (TryFindTarget()) return;
 
         if (Vector3.Distance(transform.position, _currentPatrolPoint) <= MovePointDistance)
         {
-            Debug.Log("SetPatrolPoint");
             transform.position = _currentPatrolPoint;
             SetState(CurrentState);
             return;
         }
         transform.LookAt(_currentPatrolPoint);
-        Vector3 dir = (_currentPatrolPoint - transform.position).normalized;
-
-        _characterController.Move(dir * MoveSpeed * Time.deltaTime);
+        _agent.SetDestination(_currentPatrolPoint);
+       
+        //Vector3 dir = (_currentPatrolPoint - transform.position).normalized;
+        //_characterController.Move(dir * MoveSpeed * Time.deltaTime);
 
      
     }
 
-    private void Return()
+    protected void Return()
     {
         if (Vector3.Distance(transform.position, _startPosition) <= MovePointDistance)
         {
-            Debug.Log("상태전환: Return -> Idle");
             transform.position = _startPosition;
             SetState(EnemyState.Idle);
             return;
         }
 
-        if(FindTarget()) return;
+        if(TryFindTarget()) return;
 
-        Vector3 dir = (_startPosition - transform.position).normalized;
-        _characterController.Move(dir * MoveSpeed * Time.deltaTime);
+        //Vector3 dir = (_startPosition - transform.position).normalized;
+        //_characterController.Move(dir * MoveSpeed * Time.deltaTime);
+        _agent.SetDestination(_startPosition);
     }
 
-    private void Attack()
+    protected void Attack()
     {
         if (Vector3.Distance(transform.position, _player.transform.position) >= AttackDistance)
         {
-            Debug.Log("상태전환: Attack -> Trace");
             SetState(EnemyState.Trace);
             _attackTimer = 0;
             return;
@@ -185,7 +189,6 @@ public class Enemy : MonoBehaviour
         _attackTimer += Time.deltaTime;
         if(_attackTimer > AttackCoolTime)
         {
-            Debug.Log("플레이어 공격!");
             _attackTimer = 0;
         }
 
@@ -193,7 +196,9 @@ public class Enemy : MonoBehaviour
 
     private IEnumerator Damaged_Coroutine()
     {
+ 
         yield return new WaitForSeconds(DamagedTime);
+        _agent.isStopped = false;
         SetState(EnemyState.Trace);
     }
 
@@ -203,29 +208,27 @@ public class Enemy : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    private bool FindTarget()
+    private bool TryFindTarget()
     {
         if (Vector3.Distance(transform.position, _player.transform.position) < FindDistance)
         {
-            Debug.Log("상태전환: Idle -> Trace");
             SetState(EnemyState.Trace);
             return true;
         }
         return false;
     }
 
-    private bool ReturnPoint()
+    private bool TryReturnPoint()
     {
         if (Vector3.Distance(transform.position, _player.transform.position) > ReturnDistance)
         {
-            Debug.Log("상태전환: Trace -> Return");
             SetState(EnemyState.Return);
             return true;
         }
         return false;
     }
 
-    private void SetState(EnemyState enemyState)
+    protected void SetState(EnemyState enemyState)
     {
         CurrentState = enemyState;
 

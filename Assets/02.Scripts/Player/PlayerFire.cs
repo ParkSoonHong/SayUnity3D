@@ -25,6 +25,8 @@ public class PlayerFire : MonoBehaviour
     private int _bombCount;
 
     public int Damage = 10;
+    public int WeaponKnockback = 200;
+
 
     public ParticleSystem BulletEffectPrefab;
 
@@ -51,6 +53,7 @@ public class PlayerFire : MonoBehaviour
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
+        
         _mainCamera = Camera.main;
         UI_Manager.Instance.UpdateBomb(_bombCount, _player.MaxBombCount);
         UI_Manager.Instance.UpdateBullet(_bulletCount, _player.MaxBulletCount);
@@ -174,17 +177,14 @@ public class PlayerFire : MonoBehaviour
 
             UI_Manager.Instance.UpdateBullet(_bulletCount, _player.MaxBulletCount);
             _timar = 0;
-            if(hitInfo.collider.gameObject.CompareTag("Enemy"))
+           
+            IDamageAble DamageAble = hitInfo.collider.GetComponent<IDamageAble>();
+            if (DamageAble != null)
             {
-                Enemy enemy = hitInfo.collider.GetComponent<Enemy>();
-
-                Damage damage = new Damage();
-                damage.Value = Damage;
-                damage.From = this.gameObject;
-
-                enemy.TakeDamage(damage);
-
+                Damage damage = new Damage(Damage, this.gameObject , WeaponKnockback);
+                DamageAble.TakeDamage(damage);
             }
+              
         }
     }
 

@@ -8,7 +8,7 @@ public struct PlayerState
     public float JumpPower;
 }
 
-public class Player : MonoBehaviour
+public class Player : MonoBehaviour , IDamageAble
 {
 
     private CharacterController _characterController;
@@ -53,5 +53,10 @@ public class Player : MonoBehaviour
         MaxBombCount = _playerData.BombCount;
         MaxBulletCount = _playerData.MaxBulletCount;
         MaxThroPower = _playerData.MaxThroPower;
+    }
+
+    public void TakeDamage(Damage damage)
+    {
+
     }
 }
