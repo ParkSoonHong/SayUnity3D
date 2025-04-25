@@ -31,6 +31,9 @@ public class Player : MonoBehaviour , IDamageAble
     public int MaxBulletCount = 50;
     public float MaxThroPower = 30;
 
+    private float _maxhealth;
+    private float _health;
+
     [SerializeField] private PlayerSO _playerData;
     private void Awake()
     {
@@ -53,10 +56,16 @@ public class Player : MonoBehaviour , IDamageAble
         MaxBombCount = _playerData.BombCount;
         MaxBulletCount = _playerData.MaxBulletCount;
         MaxThroPower = _playerData.MaxThroPower;
+        _maxhealth = _playerData.Maxhealth;
+        _health = _maxhealth;
     }
 
     public void TakeDamage(Damage damage)
     {
-
+        _health -= damage.Value;
+        if(_health <= 0)
+        {
+            // 죽음
+        }
     }
 }

@@ -1,8 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.PackageManager;
 using UnityEngine;
 
+public enum WeaponType
+{
+    Gun,
+    melee,
+}
 
 public class PlayerFire : MonoBehaviour
 {
@@ -27,7 +31,6 @@ public class PlayerFire : MonoBehaviour
     public int Damage = 10;
     public int WeaponKnockback = 200;
 
-
     public ParticleSystem BulletEffectPrefab;
 
     public float FireCoolTime = 0.2f;
@@ -35,6 +38,13 @@ public class PlayerFire : MonoBehaviour
     private float _timar = 0;
 
     private bool _isReLoad = false;
+
+    public float angleRange = 30f;
+    public float radius = 3f;
+
+    private WeaponType _weaponType = WeaponType.Gun;
+    private Damage _damage;
+
     private void Awake()
     {
         bulletLineRenderer = GetComponent<LineRenderer>();
@@ -53,37 +63,69 @@ public class PlayerFire : MonoBehaviour
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
-        
+
         _mainCamera = Camera.main;
         UI_Manager.Instance.UpdateBomb(_bombCount, _player.MaxBombCount);
         UI_Manager.Instance.UpdateBullet(_bulletCount, _player.MaxBulletCount);
+
+        _damage = new Damage(Damage, this.gameObject, WeaponKnockback);
     }
 
     private void Update()
     {
         Bomb();
 
-        if(Input.GetMouseButtonDown(0))
+        WeaponSwap();
+
+        if (Input.GetMouseButtonDown(0))
         {
-            Fire();
+            switch (_weaponType)
+            {
+                case WeaponType.Gun:
+                    {
+                        Fire();
+                        break;
+                    }
+                case WeaponType.melee:
+                    {
+                        MeleeAttack();
+                        break;
+                    }
+            }
         }
 
         if(Input.GetMouseButton(0))
         {
-            _timar += Time.deltaTime;
-            if (FireCoolTime <= _timar)
+            switch (_weaponType)
             {
-                Fire();
+                case WeaponType.Gun:
+                    {
+                        _timar += Time.deltaTime;
+                        if (FireCoolTime <= _timar)
+                        {
+                            Fire();
+                        }
+                        break;
+                    }
+                case WeaponType.melee:
+                    {
+                        _timar += Time.deltaTime;
+                        if (FireCoolTime <= _timar)
+                        {
+                            MeleeAttack();
+                        }
+                        break;
+                    }
             }
         }
-
-        if(Input.GetKeyDown(KeyCode.R) && !_isReLoad)
+        
+        if (Input.GetKeyDown(KeyCode.R) && !_isReLoad)
         {
             _isReLoad = true;
             UI_Manager.Instance.ReLodingText();
         }
 
-        if(_isReLoad)
+        if (_isReLoad)
         {
             _timar += Time.deltaTime;
         }
@@ -99,10 +141,22 @@ public class PlayerFire : MonoBehaviour
         //4. 레이를 발사한 다음,                   ㄴ에 데잍터가 있다면(부딫혀있으면) 피격 이펙트 생성(표시) 물체가 충돌하면 피격 이펙트 생성하기.
         //2. 레이를 생성하고 발사 위치와 진행 방향을 설정
 
-            // Ray : 레이저(시작위치,방향)
-            // RayCast : 레이저를 발사
-            // RayCastHit : 레이저가 물체와 부딛혔다면 그 정보를 저장하는 구조체
+        // Ray : 레이저(시작위치,방향)
+        // RayCast : 레이저를 발사
+        // RayCastHit : 레이저가 물체와 부딛혔다면 그 정보를 저장하는 구조체
 
+    }
+
+    private void WeaponSwap()
+    {
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            _weaponType = WeaponType.Gun;
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            _weaponType = WeaponType.melee;
+        }
     }
 
     public void ReLoad()
@@ -177,18 +231,45 @@ public class PlayerFire : MonoBehaviour
 
             UI_Manager.Instance.UpdateBullet(_bulletCount, _player.MaxBulletCount);
             _timar = 0;
-           
-            IDamageAble DamageAble = hitInfo.collider.GetComponent<IDamageAble>();
-            if (DamageAble != null)
+
+
+            if (hitInfo.collider.TryGetComponent<IDamageAble>(out IDamageAble damageAble)) // true 받으면 out에 집어 넣어준다.
             {
-                Damage damage = new Damage(Damage, this.gameObject , WeaponKnockback);
-                DamageAble.TakeDamage(damage);
+                damageAble.TakeDamage(_damage);
             }
-              
+
+
         }
     }
 
-     IEnumerator ShotEffect(Vector3 hitPosition)
+    // 근접 무기 구현
+    // 내 앞 백터 * offset 까지 부채꼴 모양으로 범위 체크
+    // 라이트 + 앞 백터 에서 
+
+    public void MeleeAttack()
+    {
+        Collider[]
+        colliders = Physics.OverlapSphere(transform.position, radius * 2);
+
+        foreach (Collider collider in colliders)
+        {
+            Vector3 interV = (collider.transform.position - transform.position).normalized;
+
+            // '타겟-나 벡터'와 '내 정면 벡터'를 내적
+            float dot = Vector3.Dot(interV, transform.forward);
+            // 두 벡터 모두 단위 벡터이므로 내적 결과에 cos의 역을 취해서 theta를 구함
+            float theta = Mathf.Acos(dot);
+            // angleRange와 비교하기 위해 degree로 변환
+            float degree = Mathf.Rad2Deg * theta;
+
+            // 시야각 판별
+            if (degree <= angleRange / 2f && collider.TryGetComponent<IDamageAble>(out IDamageAble damageAble))
+            {
+                damageAble.TakeDamage(_damage);
+            }
+        }
+    }
+    IEnumerator ShotEffect(Vector3 hitPosition)
     {
         // 선의 시작점은 총구의 위치
         bulletLineRenderer.SetPosition(0, FirePosition.transform.position);
@@ -198,14 +279,14 @@ public class PlayerFire : MonoBehaviour
         bulletLineRenderer.enabled = true;
         yield return new WaitForSeconds(0.03f);
         bulletLineRenderer.enabled = false;
-
+        yield break;
         // 파이어 포지션과 카메라 위치를 동시에 위로 조금씩 올리다가 일정 수 까지 올라가면 멈추고 양옆으로 발사
 
     }
 
-    public bool BulletChek() 
+    public bool BulletChek()
     {
-        if(_bulletCount <= 0)
+        if (_bulletCount <= 0)
         {
             _isReLoad = false;
             _timar = 0;

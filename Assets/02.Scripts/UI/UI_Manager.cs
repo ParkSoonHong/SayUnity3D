@@ -1,4 +1,6 @@
+using System.Collections;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,8 +9,14 @@ public class UI_Manager : MonoBehaviour
     public static UI_Manager Instance = null;
 
     public Slider StaminaSlider;
+    public Slider HealthSlider;
+    public CanvasRenderer HitEffectImage;
+    public float HitTime;
 
     public GameObject CompositekeyText;
+
+    public float elapsedTime = 0f;
+    public float AlphaSpeed = 0.5f;
 
     public TextMeshProUGUI BulletText;
     public TextMeshProUGUI BombText;
@@ -48,5 +56,20 @@ public class UI_Manager : MonoBehaviour
     public void UpdateCompositekeyText(bool chek)
     {
         CompositekeyText.SetActive(chek);
+    }
+
+    public void UpdateHealth(float health)
+    {
+        HealthSlider.value = health;
+        StartCoroutine(HitEffect());
+    }
+
+    private IEnumerator HitEffect()
+    {
+        HitEffectImage.SetAlpha(Mathf.Lerp(1f, 0f, elapsedTime / AlphaSpeed));
+        yield return new WaitForSeconds(HitTime);
+        HitEffectImage.SetAlpha(Mathf.Lerp(1f, 0f, elapsedTime / AlphaSpeed));
+        yield return new WaitForSeconds(HitTime);
+        yield break;
     }
 }

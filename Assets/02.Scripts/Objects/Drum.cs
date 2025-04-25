@@ -1,11 +1,12 @@
 using System.Collections;
+using UnityEditor.PackageManager;
 using UnityEngine;
 
 public class Drum : MonoBehaviour,IDamageAble
 {
     public GameObject ExplosionPrefab;
 
-    public int Health = 100;
+    public float Health = 100;
     public int Damage = 10;
     public float DestaroyTime = 2f;
     public float ForcePower = 200;
@@ -36,17 +37,21 @@ public class Drum : MonoBehaviour,IDamageAble
     {
         Collider[] colliders = Physics.OverlapSphere(transform.position, 5);
 
-
         foreach(Collider collider in colliders)
         {
-            Debug.Log(collider.name);
             IDamageAble damaged = collider.GetComponent<IDamageAble>();
             if (damaged != null)
             {
-                damaged.TakeDamage(_damage);
+                if(collider.TryGetComponent<Drum>(out Drum durm) && durm != this)
+                {
+                    collider.GetComponent<Drum>().StartCoroutine(Explosion());
+                }
+                else
+                {
+                    damaged.TakeDamage(_damage);
+                }
             }
-            
-            
+
         }
 
         _rigidbody.AddForce(Vector3.up * ForcePower , ForceMode.Impulse);
@@ -56,6 +61,7 @@ public class Drum : MonoBehaviour,IDamageAble
 
         yield return new WaitForSeconds(DestaroyTime);
         Destroy(gameObject);
+        yield break;
     }
 
 }

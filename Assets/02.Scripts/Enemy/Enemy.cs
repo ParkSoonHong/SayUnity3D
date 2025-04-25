@@ -24,6 +24,8 @@ public class Enemy : MonoBehaviour, IDamageAble
     private Vector3 _startPosition;
     protected NavMeshAgent _agent;
 
+    public UI_Enemy UI_Enemy;
+
     public float FindDistance = 7f;
     public float AttackDistance = 2f;
     public float ReturnDistance = 5f;
@@ -32,7 +34,10 @@ public class Enemy : MonoBehaviour, IDamageAble
     public float AttackCoolTime = 2f;
     private float _attackTimer = 0f;
 
-    public int Health = 100;
+    private float _maxHealth = 100;
+    private float _health = 0;
+
+
     public float DamagedTime = 0.5f;
 
     public float PatrolTime = 2f;
@@ -49,6 +54,7 @@ public class Enemy : MonoBehaviour, IDamageAble
         _characterController = GetComponent<CharacterController>();
         _agent = GetComponent<NavMeshAgent>();
         _agent.speed = MoveSpeed;
+        _health = _maxHealth;
     }
 
 
@@ -86,20 +92,22 @@ public class Enemy : MonoBehaviour, IDamageAble
 
     public void TakeDamage(Damage damage)
     {
-        _agent.isStopped = true;
-        _agent.ResetPath();
-        Vector3 dir = (damage.From.transform.position - transform.position) * -1;
-        dir.Normalize();
-        _patrolTimer = 0;
-        _characterController.Move(dir * damage.KnockbackPower * Time.deltaTime);
+      
       
         if (CurrentState == EnemyState.Damaged || CurrentState == EnemyState.Die)
         {
             return;
         }
+        _agent.isStopped = true;
+        _agent.ResetPath();
+        Vector3 dir = (damage.From.transform.position - transform.position) * -1;
+        dir.Normalize();
+        _patrolTimer = 0;
+        transform.position = transform.position + (dir * damage.KnockbackPower * Time.deltaTime);
 
-        Health -= damage.Value;
-        if(Health <= 0)
+        _health -= damage.Value;
+        UI_Enemy.UpdateHealth(_health/ _maxHealth);
+        if (_health <= 0)
         {
             SetState ( EnemyState.Die);
             StartCoroutine(Die_coruotin());
@@ -185,13 +193,24 @@ public class Enemy : MonoBehaviour, IDamageAble
             _attackTimer = 0;
             return;
         }
+        // 일단 공격
 
         _attackTimer += Time.deltaTime;
         if(_attackTimer > AttackCoolTime)
         {
+           
+
             _attackTimer = 0;
         }
 
+    }
+
+    private IEnumerator Attack_Coroutine()
+    {
+        Physics.OverlapSphere(transform.forward, AttackDistance); 
+
+        // 공격 상태 아니면 return
+        yield return new WaitForSeconds(_attackTimer);
     }
 
     private IEnumerator Damaged_Coroutine()
@@ -200,12 +219,18 @@ public class Enemy : MonoBehaviour, IDamageAble
         yield return new WaitForSeconds(DamagedTime);
         _agent.isStopped = false;
         SetState(EnemyState.Trace);
+        yield break;
     }
 
     private IEnumerator Die_coruotin()
     {
+        Vector3 dir = transform.position;
+        dir.z -= Time.deltaTime * MoveSpeed;
+        transform.position = dir;
+
         yield return new WaitForSeconds(DeathTime);
         gameObject.SetActive(false);
+        yield break;
     }
 
     private bool TryFindTarget()

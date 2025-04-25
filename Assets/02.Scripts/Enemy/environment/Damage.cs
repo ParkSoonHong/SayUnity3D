@@ -2,11 +2,11 @@ using UnityEngine;
 
 public class Damage 
 {
-    public int Value;
+    public float Value;
     public float KnockbackPower = 100;
     public GameObject From;
 
-    public Damage(int value,  GameObject from , float knockbackPower = 0)
+    public Damage(float value,  GameObject from , float knockbackPower = 0)
     {
         Value = value;
         KnockbackPower = knockbackPower;

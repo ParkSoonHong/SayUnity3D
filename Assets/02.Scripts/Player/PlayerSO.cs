@@ -10,6 +10,9 @@ public class PlayerSO : ScriptableObject
     public int MaxJumpCount = 2;
     public float MaxStamina = 10;
     public float StaminaRecoverySpeed = 1;
+    public float Maxhealth;
+ 
+
 
     // 스테미나 감소량
     public float MoveActionStaminaAmount = 0.5f;
