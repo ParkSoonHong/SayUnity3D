@@ -3,7 +3,12 @@ guid: 99b354d17da9f5444bde8f686774b78f
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: MI_Wpn_01_swk_002
+    second: {fileID: 2100000, guid: b13500683bd761549b14ffb3d2d4e816, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
