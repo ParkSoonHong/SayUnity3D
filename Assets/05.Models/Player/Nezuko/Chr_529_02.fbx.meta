@@ -3,7 +3,32 @@ guid: 25e04db62b43b2d40991268af12f4cdb
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: MI_Chr_529_02_Body
+    second: {fileID: 2100000, guid: 0e585af658ad0be4797591cd4c790448, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: MI_Chr_529_02_Body_NoOutline
+    second: {fileID: 2100000, guid: 2d4317006166739468a86f5621b7e156, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: MI_Chr_529_02_Eye
+    second: {fileID: 2100000, guid: db21594e4ff733b4ea70dd92a0fee011, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: MI_Chr_529_02_Face
+    second: {fileID: 2100000, guid: 5ef49796d414a804baaddf20309b8d3e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: MI_Chr_529_02_Hair
+    second: {fileID: 2100000, guid: 0c0a3a6909407254ca9471490c741136, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
