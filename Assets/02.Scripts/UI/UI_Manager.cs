@@ -10,13 +10,12 @@ public class UI_Manager : MonoBehaviour
 
     public Slider StaminaSlider;
     public Slider HealthSlider;
-    public CanvasRenderer HitEffectImage;
-    public float HitTime;
+    public Image HitEffectImage;
+    public float HitTime = 1f;
+
+    private Coroutine _hitCoroutine;
 
     public GameObject CompositekeyText;
-
-    public float elapsedTime = 0f;
-    public float AlphaSpeed = 0.5f;
 
     public TextMeshProUGUI BulletText;
     public TextMeshProUGUI BombText;
@@ -61,15 +60,39 @@ public class UI_Manager : MonoBehaviour
     public void UpdateHealth(float health)
     {
         HealthSlider.value = health;
-        StartCoroutine(HitEffect());
+
+        if (_hitCoroutine != null) return;
+
+        _hitCoroutine = StartCoroutine(HitEffect());
     }
 
     private IEnumerator HitEffect()
     {
-        HitEffectImage.SetAlpha(Mathf.Lerp(1f, 0f, elapsedTime / AlphaSpeed));
-        yield return new WaitForSeconds(HitTime);
-        HitEffectImage.SetAlpha(Mathf.Lerp(1f, 0f, elapsedTime / AlphaSpeed));
-        yield return new WaitForSeconds(HitTime);
-        yield break;
+        float elapsed = 0f;
+        Color original = HitEffectImage.color;
+        original.a = 1f;
+        HitEffectImage.color = original;
+        while (elapsed < HitTime)
+        {
+            // 경과 시간 누적
+            elapsed += Time.deltaTime;
+            // 보간 비율 0~1 계산
+            float t = Mathf.Clamp01(elapsed / HitTime);
+            // 알파값 1 → 0 보간
+            Color c = original;
+            c.a = Mathf.Lerp(1f, 0f, t);
+            HitEffectImage.color = c;
+
+            yield return null;  // 다음 프레임까지 대기
+        }
+
+        // 완전히 투명하게 마무리
+        Color end = original;
+        end.a = 0f;
+        HitEffectImage.color = end;
+
+        // 재실행 가능하도록 코루틴 참조 해제
+        _hitCoroutine = null;
     }
 }
+ 

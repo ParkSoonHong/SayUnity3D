@@ -19,5 +19,9 @@ MonoBehaviour:
   MaxJumpCount: 2
   MaxStamina: 10
   StaminaRecoverySpeed: 1
+  Maxhealth: 100
   MoveActionStaminaAmount: 0.05
   RollStaminaAmout: 3
+  BombCount: 3
+  MaxBulletCount: 50
+  MaxThroPower: 30

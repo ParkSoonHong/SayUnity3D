@@ -558,7 +558,9 @@ MonoBehaviour:
   ReturnDistance: 7
   MoveSpeed: 3.3
   DeathTime: 2
-  AttackCoolTime: 0
+  AttackCoolTime: 2
+  Damage: 10
+  knockbackPower: 100
   DamagedTime: 0.5
   PatrolTime: 2
   PatrolPoints:

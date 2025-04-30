@@ -63,6 +63,7 @@ public class Player : MonoBehaviour , IDamageAble
     public void TakeDamage(Damage damage)
     {
         _health -= damage.Value;
+        UI_Manager.Instance.UpdateHealth(_health/_maxhealth);
         if(_health <= 0)
         {
             // 죽음

@@ -32,11 +32,15 @@ public class Enemy : MonoBehaviour, IDamageAble
     public float MoveSpeed = 3.3f;
     public float DeathTime = 2f;
     public float AttackCoolTime = 2f;
+
+    public float Damage = 10;
+    public float knockbackPower = 100;
+
+
     private float _attackTimer = 0f;
 
     private float _maxHealth = 100;
     private float _health = 0;
-
 
     public float DamagedTime = 0.5f;
 
@@ -47,6 +51,9 @@ public class Enemy : MonoBehaviour, IDamageAble
     private Vector3 _currentPatrolPoint;
     public float MovePointDistance = 0.1f;
 
+    private Damage _damage;
+    private bool isAttack = false;
+
     public void Start()
     {
         _startPosition = transform.position;
@@ -55,6 +62,8 @@ public class Enemy : MonoBehaviour, IDamageAble
         _agent = GetComponent<NavMeshAgent>();
         _agent.speed = MoveSpeed;
         _health = _maxHealth;
+
+        _damage = new Damage(Damage,this.gameObject, knockbackPower);
     }
 
 
@@ -199,18 +208,19 @@ public class Enemy : MonoBehaviour, IDamageAble
         if(_attackTimer > AttackCoolTime)
         {
            
+            Collider[] Colliders = Physics.OverlapSphere(transform.position, AttackDistance);
 
+            foreach (Collider collider in Colliders)
+            {
+                if (collider.TryGetComponent<IDamageAble>(out IDamageAble damageAble) && collider.CompareTag("Player"))
+                {
+                    damageAble.TakeDamage(_damage);
+                    break;
+                }
+            }
             _attackTimer = 0;
         }
 
-    }
-
-    private IEnumerator Attack_Coroutine()
-    {
-        Physics.OverlapSphere(transform.forward, AttackDistance); 
-
-        // 공격 상태 아니면 return
-        yield return new WaitForSeconds(_attackTimer);
     }
 
     private IEnumerator Damaged_Coroutine()
