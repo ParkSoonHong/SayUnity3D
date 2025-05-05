@@ -76,8 +76,6 @@ public class CameraFollow : MonoBehaviour
         transform.position = FPSCamPOS.position;
     }
 
-
-
     private void TPSView()
     {
         // 1) 마우스 입력
@@ -95,27 +93,6 @@ public class CameraFollow : MonoBehaviour
 
         // 4) 위치 즉시 적용
         transform.position = desiredPos;
-
-        // 5) 캐릭터 바라보도록 회전 즉시 적용
-        transform.rotation = Quaternion.LookRotation(TPSCamPOS.position - transform.position);
-
-        /*
-        // 4) 부드러운 위치 보간
-        transform.position = Vector3.SmoothDamp(
-            transform.position, desiredPos,
-            ref _velocity, SmoothTime  
-        );
-
-        // 5) 캐릭터 바라보도록 회전
-        Quaternion targetRot = Quaternion.LookRotation(
-            TPSCamPOS.position - transform.position
-        );                              
-
-        transform.rotation = Quaternion.Slerp(
-            transform.rotation, targetRot,
-            RotateSpeed * Time.deltaTime
-        );
-        */
     }
 
 

@@ -57,9 +57,7 @@ public class CameraRotate : MonoBehaviour
 
     private void TPSView()
     {
-        return;
-     
-        
+        transform.rotation = Quaternion.LookRotation(_cameraFollow.TPSCamPOS.position - transform.position);
     }
 
     private void QuarterView()

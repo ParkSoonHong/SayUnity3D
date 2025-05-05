@@ -15,7 +15,7 @@ public enum EnemyState
 }
 
 
-public class Enemy : MonoBehaviour, IDamageAble
+public class Enemy : FSMBase, IDamageAble 
 {
     public EnemyState CurrentState = EnemyState.Idle;
 

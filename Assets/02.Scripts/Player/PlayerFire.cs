@@ -8,7 +8,7 @@ public enum WeaponType
     melee,
 }
 
-public class PlayerFire : MonoBehaviour
+public class PlayerFire : MonoBehaviour // 나중에 이름 변경 Attack으로
 {
     private Player _player;
     private LineRenderer bulletLineRenderer;
@@ -18,6 +18,11 @@ public class PlayerFire : MonoBehaviour
     public GameObject BombPrefab;
     public GameObject TracerPrefab;
     private List<GameObject> _bombs;
+
+    // 파이어 관련
+    private int _maxBombCount = 3;
+    private int _maxBulletCount = 50;
+    private float _maxThroPower = 30;
 
     private float _inithrowPower = 15f;
     private float _throwPower;
@@ -54,8 +59,8 @@ public class PlayerFire : MonoBehaviour
         bulletLineRenderer.enabled = false;
 
         _player = GetComponent<Player>();
-        _bombCount = _player.MaxBombCount;
-        _bulletCount = _player.MaxBulletCount;
+        _bombCount = _maxBombCount;
+        _bulletCount = _maxBulletCount;
         _throwPower = _inithrowPower;
         BombPool();
     }
@@ -65,8 +70,8 @@ public class PlayerFire : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
 
         _mainCamera = Camera.main;
-        UI_Manager.Instance.UpdateBomb(_bombCount, _player.MaxBombCount);
-        UI_Manager.Instance.UpdateBullet(_bulletCount, _player.MaxBulletCount);
+        UI_Manager.Instance.UpdateBomb(_bombCount, _maxBombCount);
+        UI_Manager.Instance.UpdateBullet(_bulletCount, _maxBulletCount);
 
         _damage = new Damage(Damage, this.gameObject, WeaponKnockback);
     }
@@ -134,17 +139,6 @@ public class PlayerFire : MonoBehaviour
         {
             ReLoad();
         }
-
-        // 목표 : 마우스의 왼쪽 버튼을 누르면 카메라가 바라보는 방향으로 총알을 발사하고 싶다.
-        //1. 마우스 왼쪽 버튼 입력 받기
-        //3. 레이와 부딛힌 물체의 정보를 저장할 변수를 생성
-        //4. 레이를 발사한 다음,                   ㄴ에 데잍터가 있다면(부딫혀있으면) 피격 이펙트 생성(표시) 물체가 충돌하면 피격 이펙트 생성하기.
-        //2. 레이를 생성하고 발사 위치와 진행 방향을 설정
-
-        // Ray : 레이저(시작위치,방향)
-        // RayCast : 레이저를 발사
-        // RayCastHit : 레이저가 물체와 부딛혔다면 그 정보를 저장하는 구조체
-
     }
 
     private void WeaponSwap()
@@ -162,13 +156,13 @@ public class PlayerFire : MonoBehaviour
     public void ReLoad()
     {
         _bulletCount = 50;
-        UI_Manager.Instance.UpdateBullet(_bulletCount, _player.MaxBulletCount);
+        UI_Manager.Instance.UpdateBullet(_bulletCount, _maxBulletCount);
     }
 
     public void BombPool()
     {
-        _bombs = new List<GameObject>(_player.MaxBombCount);
-        for (int i = 0; i < _player.MaxBombCount; i++)
+        _bombs = new List<GameObject>(_maxBombCount);
+        for (int i = 0; i < _maxBombCount; i++)
         {
             GameObject bomb = Instantiate(BombPrefab);
             _bombs.Add(bomb);
@@ -182,7 +176,7 @@ public class PlayerFire : MonoBehaviour
 
         if (Input.GetMouseButton(1))
         {
-            if (_throwPower >= _player.MaxThroPower) return;
+            if (_throwPower >= _maxThroPower) return;
             _throwPower += Time.deltaTime * _throwPoweAccretionr;
         }
 
@@ -209,7 +203,7 @@ public class PlayerFire : MonoBehaviour
 
             _throwPower = _inithrowPower;
             _bombCount--;
-            UI_Manager.Instance.UpdateBomb(_bombCount, _player.MaxBombCount);
+            UI_Manager.Instance.UpdateBomb(_bombCount, _maxBombCount);
         }
     }
     public void Fire()
@@ -229,7 +223,7 @@ public class PlayerFire : MonoBehaviour
             _bulletCount--;
             StartCoroutine(ShotEffect(hitInfo.point));
 
-            UI_Manager.Instance.UpdateBullet(_bulletCount, _player.MaxBulletCount);
+            UI_Manager.Instance.UpdateBullet(_bulletCount, _maxBulletCount);
             _timar = 0;
 
 
@@ -290,7 +284,7 @@ public class PlayerFire : MonoBehaviour
         {
             _isReLoad = false;
             _timar = 0;
-            UI_Manager.Instance.UpdateBullet(_bulletCount, _player.MaxBulletCount);
+            UI_Manager.Instance.UpdateBullet(_bulletCount, _maxBulletCount);
             return false;
         }
         return true;

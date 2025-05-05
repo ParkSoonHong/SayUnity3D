@@ -1,4 +1,7 @@
+using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 public struct PlayerState
 {
@@ -14,27 +17,20 @@ public class Player : MonoBehaviour , IDamageAble
     private CharacterController _characterController;
     public CharacterController CharacterController => _characterController;
 
-    public float MoveSpeed = 7;
-    public float MaxRunSpeed = 12;
-    public float RunAcceleration = 5f;
-    public float JumpPower = 5;
-    public int MaxJumpCount = 2;
-    public float MaxStamina = 10;
+    private float _maxStamina = 10;
+    private float _stamina;
+    public float Stamina => _stamina;
     public float StaminaRecoverySpeed = 1;
 
-    // 사용하는 액션에 스테미나 감소량
-    public float MoveActionStaminaAmount = 0.5f;
-    public float RollStaminaAmout = 3f;
+    public float YVelocity = 0f;  // 중력 가속도
 
-    // 파이어 관련
-    public int MaxBombCount = 3;
-    public int MaxBulletCount = 50;
-    public float MaxThroPower = 30;
-
-    private float _maxhealth;
+    private float _maxhealth = 100;
     private float _health;
+    public float Health => _health;
 
-    [SerializeField] private PlayerSO _playerData;
+    private bool _isRecovery = false;
+
+    public PlayerSO PlayerData;
     private void Awake()
     {
         _characterController = GetComponent<CharacterController>();
@@ -43,21 +39,53 @@ public class Player : MonoBehaviour , IDamageAble
 
     private void Initialize()
     {
-        MoveSpeed = _playerData.MoveSpeed;
-        MaxRunSpeed = _playerData.MaxRunSpeed;
-        RunAcceleration = _playerData.RunAcceleration;
-        JumpPower = _playerData.JumpPower;
-        MaxJumpCount = _playerData.MaxJumpCount;
-        MaxStamina = _playerData.MaxStamina;
-        StaminaRecoverySpeed = _playerData.StaminaRecoverySpeed;
-        MoveActionStaminaAmount = _playerData.MoveActionStaminaAmount;
-        RollStaminaAmout = _playerData.RollStaminaAmout;
-
-        MaxBombCount = _playerData.BombCount;
-        MaxBulletCount = _playerData.MaxBulletCount;
-        MaxThroPower = _playerData.MaxThroPower;
-        _maxhealth = _playerData.Maxhealth;
+        _maxhealth = PlayerData.Maxhealth;
         _health = _maxhealth;
+
+        _maxStamina = PlayerData.MaxStamina;
+        _stamina = _maxStamina;
+
+    }
+/*
+    private void Update()
+    {
+      
+    }
+*/
+    public bool UseStamina(float StaminaAmount) // 스테미나를 사용 할수 있는지
+    {
+        if (_stamina - StaminaAmount <= 0)
+        {
+            return false;
+        }
+
+        _stamina -= StaminaAmount;
+        UI_Manager.Instance.UpdatePlayerStamina(_stamina / _maxStamina);
+        _isRecovery = false;
+        return true;
+    }
+
+    private IEnumerator RecoveryStamina(float waitTime)//스테미너 회복
+    {
+     
+
+        yield return new WaitForSeconds(waitTime); // 1초뒤 회복 시작
+
+        while (_isRecovery) // 현재 회복 중이라면
+        {
+            if (_stamina >= _maxStamina) // 현재가 최대를 넘어가면 
+            {
+                _stamina = _maxStamina;
+                UI_Manager.Instance.UpdatePlayerStamina(_stamina / _maxStamina);
+                _isRecovery = false;
+                break;
+            }
+
+            _stamina += StaminaRecoverySpeed;
+            UI_Manager.Instance.UpdatePlayerStamina(_stamina /_maxStamina);
+        }
+
+        yield break;
     }
 
     public void TakeDamage(Damage damage)
@@ -68,5 +96,11 @@ public class Player : MonoBehaviour , IDamageAble
         {
             // 죽음
         }
+    }
+
+    public void StartRecoveryStamina()
+    {
+        _isRecovery = true;
+        StartCoroutine(RecoveryStamina(1));
     }
 }
