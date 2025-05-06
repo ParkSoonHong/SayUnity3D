@@ -11,6 +11,10 @@ public class PlayerManager : MonoBehaviour
     private List<GameObject> _playerList;
     public List<GameObject> PlayerList => _playerList;
 
+    private List<PlayerSO> _playerDatas; // 나중에 교체
+
+    private int _cruuntIndex = 0;
+
     private void Awake()
     {
         if(Instance == null) 
@@ -20,17 +24,12 @@ public class PlayerManager : MonoBehaviour
         else
         {
             Destroy(gameObject);
-        } 
+        }
     }
 
     private void Start()
     {
-        _playerList = new List<GameObject>(characters.Count);
-        foreach (GameObject character in characters)
-        {
-            GameObject player = Instantiate(character);
-            player.SetActive(false);
-            _playerList.Add(player);
-        }
+      
     }
+
 }

@@ -70,6 +70,7 @@ public class PlayerMove
 
     public void Move()
     {
+        Run();
         float h = Input.GetAxisRaw("Horizontal");
         float v = Input.GetAxisRaw("Vertical");
 
@@ -100,36 +101,5 @@ public class PlayerMove
     }
 
 
-    /*
-    public void Climbing()
-    {
-        if ((_player.CharacterController.collisionFlags & CollisionFlags.Sides) != 0 && _player.UseStamina(MoveActionStaminaAmount))
-        {
-            if (!_isClimbing)
-            {
-                _isClimbing = true;
-                _yVelocity = 0;
-            }
-
-            // 클라이밍 중에는 일정 간격으로 스태미나 소비
-            if (_isClimbing && UseStamina(_player.MoveActionStaminaAmount))
-            {
-                ClimbingMove();
-                return;
-            }
-            else
-            {
-                // 스태미나가 부족하면 클라이밍 중지
-                _isClimbing = false;
-            }
-        }
-        else
-        {
-            // 벽에서 떨어졌을 때 클라이밍 상태 해제
-            _isClimbing = false;
-            _isRecovery = true;
-        }
-    }
-    */
 }
 

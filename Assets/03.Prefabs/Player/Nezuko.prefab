@@ -158,8 +158,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 684036591639531072}
-  - component: {fileID: 6211999253201199371}
   - component: {fileID: 8716617825474371050}
+  - component: {fileID: 1540804655906943454}
   - component: {fileID: 4023797978731286009}
   - component: {fileID: 1668909601570317554}
   - component: {fileID: 3979631309596489676}
@@ -189,28 +189,6 @@ Transform:
   - {fileID: 7041523521687847438}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6211999253201199371
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7794047654923569157}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0aa6fd13d95b6b74b9cae8dec84ee56a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  FirePosition: {fileID: 0}
-  BombPrefab: {fileID: 1126468083710044782, guid: c223ac2253b084448bd0d54dd3bdfd75, type: 3}
-  TracerPrefab: {fileID: 5129822287140751362, guid: e0af275262b9c4647a6e243e982f5fbe, type: 3}
-  Damage: 50
-  WeaponKnockback: 200
-  BulletEffectPrefab: {fileID: 0}
-  FireCoolTime: 0.2
-  ReLoadCoolTime: 2
-  angleRange: 40
-  radius: 2
 --- !u!114 &8716617825474371050
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -223,9 +201,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20feea678d20436409e76e50ef0ca027, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  FPSCamPOS: {fileID: 7168226954179221723}
+  TPSCamPOS: {fileID: 8046297548141527187}
   StaminaRecoverySpeed: 1
   YVelocity: 0
+  CharacterType: 0
   PlayerData: {fileID: 11400000, guid: 64a1480661363b641b656b229828bc29, type: 2}
+--- !u!114 &1540804655906943454
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7794047654923569157}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc9e0738ee23dd745a1a9be63da61587, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &4023797978731286009
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -238,7 +231,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a08868fd462af73419ac1377c71f0a02, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cameraTransform: {fileID: 0}
   RotationSpeed: 250
+  turnSmoothTime: 0.1
 --- !u!143 &1668909601570317554
 CharacterController:
   m_ObjectHideFlags: 0

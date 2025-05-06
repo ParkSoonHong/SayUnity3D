@@ -21,8 +21,7 @@ public class PlayerSO : ScriptableObject
     public float MoveActionStaminaAmount = 0.5f;
     public float RollStaminaAmout = 3f;
 
-    // 총
-    public int BombCount = 3;
-    public int MaxBulletCount = 50;
-    public float MaxThroPower = 30;
+    // 기본 공격
+    public float Damage = 10;
+    public float KnockBackpower = 200;
 }

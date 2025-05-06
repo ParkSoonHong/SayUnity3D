@@ -3,6 +3,8 @@ using static UnityEngine.GraphicsBuffer;
 
 public class CameraFollow : MonoBehaviour
 {
+    public static CameraFollow Instance = null;
+    
     public Transform FPSCamPOS;
     public Transform TPSCamPOS;
 
@@ -24,24 +26,43 @@ public class CameraFollow : MonoBehaviour
     private float _yaw = 0f;
     private float _pitch = 10f;         // 누적 각도
 
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    private void Start()
+    {
+        Cursor.lockState = CursorLockMode.Locked;
+    }
 
     private void LateUpdate()
     {
         if (Input.GetKeyDown(KeyCode.Alpha8))
         {
             _camPosCount = 0;
+            Cursor.lockState = CursorLockMode.Locked;
             // 보간 기법 interpoling, smooting 기법이 들어갈 예정
         }
 
         if (Input.GetKeyDown(KeyCode.Alpha9))
         {
             _camPosCount = 1;
+            Cursor.lockState = CursorLockMode.None;
             // 보간 기법 interpoling, smooting 기법이 들어갈 예정
         }
 
         if (Input.GetKeyDown(KeyCode.Alpha0))
         {
             transform.rotation = Quaternion.Euler(new Vector3(45f, 45f, 0f));
+            Cursor.lockState = CursorLockMode.Locked;
             _camPosCount = 2;
             // 보간 기법 interpoling, smooting 기법이 들어갈 예정
         }
@@ -51,6 +72,8 @@ public class CameraFollow : MonoBehaviour
 
     public void CameraPosition()
     {
+        if (FPSCamPOS == null || TPSCamPOS == null) return;
+
         switch(_camPosCount)
         {
             case 0:

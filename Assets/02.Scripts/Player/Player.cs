@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using static UnityEditor.Experimental.GraphView.GraphView;
@@ -13,6 +14,8 @@ public struct PlayerState
 
 public class Player : MonoBehaviour , IDamageAble
 {
+    public Transform FPSCamPOS;
+    public Transform TPSCamPOS;
 
     private CharacterController _characterController;
     public CharacterController CharacterController => _characterController;
@@ -30,7 +33,12 @@ public class Player : MonoBehaviour , IDamageAble
 
     private bool _isRecovery = false;
 
+    public CharacterType CharacterType;
+
     public PlayerSO PlayerData;
+
+    public List<GameObject> PlayerModels;
+    private int _curruntModels = 0;
     private void Awake()
     {
         _characterController = GetComponent<CharacterController>();
@@ -46,12 +54,7 @@ public class Player : MonoBehaviour , IDamageAble
         _stamina = _maxStamina;
 
     }
-/*
-    private void Update()
-    {
-      
-    }
-*/
+
     public bool UseStamina(float StaminaAmount) // 스테미나를 사용 할수 있는지
     {
         if (_stamina - StaminaAmount <= 0)
@@ -102,5 +105,24 @@ public class Player : MonoBehaviour , IDamageAble
     {
         _isRecovery = true;
         StartCoroutine(RecoveryStamina(1));
+    }
+    public void PlayerSwap(CharacterType characterType)
+    {
+        switch (characterType)
+        {
+            case CharacterType.Nezuko:
+                PlayerModels[_curruntModels].SetActive(false);
+                PlayerModels[(int)characterType].SetActive(true);
+                _characterController.radius = 0.4f;
+                _characterController.height = 1.55f;
+                break;
+            case CharacterType.Tanjiro:
+                PlayerModels[_curruntModels].SetActive(false);
+                PlayerModels[(int)characterType].SetActive(true);
+                _characterController.radius = 0.4f;
+                _characterController.height = 1.7f;
+                break;
+        }
+        _curruntModels = (int)characterType;
     }
 }

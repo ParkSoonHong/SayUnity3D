@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Weapon : MonoBehaviour
+public class WeaponFollow : MonoBehaviour
 {
     public GameObject WeaponPosition;
     void Start()
