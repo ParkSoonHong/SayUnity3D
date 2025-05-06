@@ -20,6 +20,9 @@ public class Player : MonoBehaviour , IDamageAble
     private CharacterController _characterController;
     public CharacterController CharacterController => _characterController;
 
+    private  List<Animator> _animators;
+    public Animator BaseAnimator;
+
     private float _maxStamina = 10;
     private float _stamina;
     public float Stamina => _stamina;
@@ -53,6 +56,16 @@ public class Player : MonoBehaviour , IDamageAble
         _maxStamina = PlayerData.MaxStamina;
         _stamina = _maxStamina;
 
+        _curruntModels = (int)CharacterType;
+
+        _animators = new List<Animator>(PlayerModels.Count);
+
+        foreach(GameObject playerModel in PlayerModels)
+        {
+            _animators.Add(playerModel.GetComponent<Animator>());
+        }
+
+        PlayerSwap(CharacterType.Nezuko);
     }
 
     public bool UseStamina(float StaminaAmount) // 스테미나를 사용 할수 있는지
@@ -106,6 +119,7 @@ public class Player : MonoBehaviour , IDamageAble
         _isRecovery = true;
         StartCoroutine(RecoveryStamina(1));
     }
+
     public void PlayerSwap(CharacterType characterType)
     {
         switch (characterType)
@@ -115,12 +129,14 @@ public class Player : MonoBehaviour , IDamageAble
                 PlayerModels[(int)characterType].SetActive(true);
                 _characterController.radius = 0.4f;
                 _characterController.height = 1.55f;
+                BaseAnimator = _animators[(int)characterType];
                 break;
             case CharacterType.Tanjiro:
                 PlayerModels[_curruntModels].SetActive(false);
                 PlayerModels[(int)characterType].SetActive(true);
                 _characterController.radius = 0.4f;
                 _characterController.height = 1.7f;
+                BaseAnimator = _animators[(int)characterType];
                 break;
         }
         _curruntModels = (int)characterType;

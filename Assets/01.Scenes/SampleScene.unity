@@ -57033,11 +57033,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 9176242562311319873, guid: 4ae3c4ca2edaf5b42b27bf3243dbdbd0, type: 3}
   m_PrefabInstance: {fileID: 1801968089}
   m_PrefabAsset: {fileID: 0}
---- !u!4 &1802526796 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: -451682303629000132, guid: bc36acd6ad49f3a47a3b1e9b34e1adc6, type: 3}
-  m_PrefabInstance: {fileID: 8512185843586960735}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1807263019
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -63875,6 +63870,14 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5866666021909216657, guid: 25e04db62b43b2d40991268af12f4cdb, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 48313c853842ec240acdba422082ea23, type: 2}
+    - target: {fileID: 5866666021909216657, guid: 25e04db62b43b2d40991268af12f4cdb, type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -67884,6 +67887,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   FPSCamPOS: {fileID: 3784877850805219174}
   TPSCamPOS: {fileID: 8656953275605944147}
+  BaseAnimator: {fileID: 0}
   StaminaRecoverySpeed: 1
   YVelocity: 0
   CharacterType: 1
@@ -67904,7 +67908,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1802526796}
+  m_Father: {fileID: 1380561482}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &541192472133004139
 GameObject:
@@ -68206,7 +68210,7 @@ GameObject:
   - component: {fileID: 2927795799762451289}
   - component: {fileID: 4139752866449315343}
   m_Layer: 3
-  m_Name: Tanjiro
+  m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -68385,12 +68389,20 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: bc36acd6ad49f3a47a3b1e9b34e1adc6, type: 3}
       propertyPath: m_Name
-      value: Chr_031_02
+      value: Tanjiro
+      objectReference: {fileID: 0}
+    - target: {fileID: 5866666021909216657, guid: bc36acd6ad49f3a47a3b1e9b34e1adc6, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 48313c853842ec240acdba422082ea23, type: 2}
+    - target: {fileID: 5866666021909216657, guid: bc36acd6ad49f3a47a3b1e9b34e1adc6, type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
-    - targetCorrespondingSourceObject: {fileID: -451682303629000132, guid: bc36acd6ad49f3a47a3b1e9b34e1adc6, type: 3}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: bc36acd6ad49f3a47a3b1e9b34e1adc6, type: 3}
       insertIndex: -1
       addedObject: {fileID: 433692274250759685}
     m_AddedComponents: []

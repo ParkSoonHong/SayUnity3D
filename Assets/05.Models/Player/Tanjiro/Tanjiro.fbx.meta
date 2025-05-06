@@ -33,7 +33,7 @@ ModelImporter:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
     resampleCurves: 1
-    optimizeGameObjects: 0
+    optimizeGameObjects: 1
     removeConstantScaleCurves: 0
     motionNodeName: 
     animationImportErrors: 
@@ -47,7 +47,8 @@ ModelImporter:
     animationPositionError: 0.5
     animationScaleError: 0.5
     animationWrapMode: 0
-    extraExposedTransformPaths: []
+    extraExposedTransformPaths:
+    - Chr_031_02/J_Root/J_Hips/J_Spine_01/J_Spine_02/J_Spine_03/J_Shoulder_R/J_Arm_R/J_ForeArm_R/J_Hand_R
     extraUserProperties: []
     clipAnimations: []
     isReadable: 0
@@ -541,13 +542,13 @@ ModelImporter:
         length: 0
         modified: 0
     skeleton:
-    - name: Chr_031_02(Clone)
+    - name: Tanjiro(Clone)
       parentName: 
       position: {x: 0, y: 0, z: 0}
       rotation: {x: 0, y: 0, z: 0, w: 1}
       scale: {x: 1, y: 1, z: 1}
     - name: Chr_031_02
-      parentName: Chr_031_02(Clone)
+      parentName: Tanjiro(Clone)
       position: {x: -0, y: 0, z: 0}
       rotation: {x: 0.000000081460335, y: 0, z: -0, w: 1}
       scale: {x: 100, y: 100, z: 100}
@@ -1037,27 +1038,27 @@ ModelImporter:
       rotation: {x: -0, y: -0, z: 2.6907679e-15, w: 1}
       scale: {x: 0.99999994, y: 1.0000002, z: 1.0000002}
     - name: Geo_Eyebrow
-      parentName: Chr_031_02(Clone)
+      parentName: Tanjiro(Clone)
       position: {x: 8.0118615e-24, y: 0, z: 0}
       rotation: {x: 0.000000081460335, y: 0, z: -0, w: 1}
       scale: {x: 100, y: 100, z: 100}
     - name: Geo_Eyes
-      parentName: Chr_031_02(Clone)
+      parentName: Tanjiro(Clone)
       position: {x: 8.0118615e-24, y: 0, z: 0}
       rotation: {x: 0.000000081460335, y: 0, z: -0, w: 1}
       scale: {x: 100, y: 100, z: 100}
     - name: Geo_Body
-      parentName: Chr_031_02(Clone)
+      parentName: Tanjiro(Clone)
       position: {x: 8.4654506e-16, y: -1.0408259e-17, z: -4.9960036e-16}
       rotation: {x: 0.000000081460335, y: 0, z: -0, w: 1}
       scale: {x: 100, y: 100, z: 100}
     - name: Geo_Face
-      parentName: Chr_031_02(Clone)
+      parentName: Tanjiro(Clone)
       position: {x: 8.0118615e-24, y: 0, z: 0}
       rotation: {x: 0.000000081460335, y: 0, z: -0, w: 1}
       scale: {x: 100, y: 100, z: 100}
     - name: Geo_Hair
-      parentName: Chr_031_02(Clone)
+      parentName: Tanjiro(Clone)
       position: {x: -0.000000007450581, y: -0.0000000074505797, z: -0.0000000037252916}
       rotation: {x: 0.00000007447542, y: 2.4651903e-31, z: 0.0000000018626451, w: 1}
       scale: {x: 100, y: 100, z: 100}

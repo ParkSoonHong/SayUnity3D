@@ -1,5 +1,6 @@
 using Unity.Android.Gradle.Manifest;
 using UnityEngine;
+using UnityEngine.InputSystem.XR;
 using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class PlayerMove 
@@ -70,22 +71,61 @@ public class PlayerMove
 
     public void Move()
     {
-        Run();
+    
+        // 1) 입력
         float h = Input.GetAxisRaw("Horizontal");
         float v = Input.GetAxisRaw("Vertical");
+        Vector3 inputDir = new Vector3(h, 0, v).normalized;
 
-        Vector3 dir = new Vector3(h, 0, v);
-        dir = dir.normalized;
-        // 메인 카메라를 기준으로 방향을 변환한다.
-        dir = Camera.main.transform.TransformDirection(dir);
-        // TransformDirection : 로컬 공간의 벡터를 월드 공간의 벡터로 바꿔주는 함수.
-        // 3. 중력적용
+        // 2) 카메라 기준 이동 방향 변환
+        Vector3 moveDir = Camera.main.transform.TransformDirection(inputDir);
+        moveDir.y = 0;
+
+        Run();
+
+        // 4) 중력 처리
+        if (_player.CharacterController.isGrounded && _player.YVelocity < 0)
+        {
+            _player.YVelocity = -2f;
+        }
         _player.YVelocity += GRAVITY * Time.deltaTime;
-        dir.y = _player.YVelocity;
 
+        // 5) 최종 이동 벡터
+        Vector3 velocity = moveDir * _currentMoveSpeed;
+        velocity.y = _player.YVelocity;
+        _player.CharacterController.Move(velocity * Time.deltaTime);
 
-        _player.CharacterController.Move(dir * _currentMoveSpeed * Time.deltaTime);
+        // 6) 애니메이터 MoveSpeed 파라미터 세팅
+        //    이동 입력이 없으면 0, 있으면 실제 속도의 크기 (Run 기준 11)
+        float horizontalSpeed = new Vector3(_player.CharacterController.velocity.x, 0, _player.CharacterController.velocity.z).magnitude;
+     
+        _player.BaseAnimator.SetFloat("MoveSpeed", horizontalSpeed);
     }
+    /*
+    float h = Input.GetAxisRaw("Horizontal");
+    float v = Input.GetAxisRaw("Vertical");
+
+    Vector3 dir = new Vector3(h, 0, v);
+    dir = dir.normalized;
+    // 메인 카메라를 기준으로 방향을 변환한다.
+    dir = Camera.main.transform.TransformDirection(dir);
+    // TransformDirection : 로컬 공간의 벡터를 월드 공간의 벡터로 바꿔주는 함수.
+    // 3. 중력적용
+    _player.YVelocity += GRAVITY * Time.deltaTime;
+    dir.y = _player.YVelocity;
+    if (h > 0 || v > 0 )
+    {
+        _player.BaseAnimator.SetFloat("MoveSpeed", _currentMoveSpeed);
+        Debug.Log(_currentMoveSpeed);
+    }
+    else
+    {
+        _player.BaseAnimator.SetFloat("MoveSpeed", 0);
+
+    }
+    _player.CharacterController.Move(dir * _currentMoveSpeed * Time.deltaTime);
+    */
+
 
     public void ClimbingMove()
     {
