@@ -6,6 +6,7 @@ public enum CharacterType
 {
     Nezuko,
     Tanjiro,
+    Count,
 }
 
 public class PlayerAttack 
@@ -42,6 +43,8 @@ public class PlayerAttack
     public float radius = 3f;
 
     private Damage _damage;
+
+    private bool _isAttack = false;
 
     public PlayerAttack(Player player)
     {
@@ -87,11 +90,13 @@ public class PlayerAttack
     public void NezukoAttack()
     {
         // 애니메이션 실행 풀링 사용,
+        _player.BaseAnimator.SetTrigger("Attack");
     }
 
     public void TanjiroAttack()
     {
         // 애니메이션 실행,
+        _player.BaseAnimator.SetTrigger("Attack");
 
         Collider[] colliders;
         colliders = Physics.OverlapSphere(_player.transform.position, radius * 2);
@@ -113,7 +118,8 @@ public class PlayerAttack
                 damageAble.TakeDamage(_damage);
             }
         }
-        
+
+      //  _isAttack = false;
     }
 
     /*

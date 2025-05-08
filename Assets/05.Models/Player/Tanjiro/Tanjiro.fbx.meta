@@ -49,6 +49,9 @@ ModelImporter:
     animationWrapMode: 0
     extraExposedTransformPaths:
     - Chr_031_02/J_Root/J_Hips/J_Spine_01/J_Spine_02/J_Spine_03/J_Shoulder_R/J_Arm_R/J_ForeArm_R/J_Hand_R
+    - Chr_031_02/J_Root/J_Hips/J_UpLeg_L/J_Leg_L/J_Foot_L
+    - Chr_031_02/J_Root/J_Hips/J_UpLeg_R/J_Leg_R/J_Foot_R
+    - Chr_031_02/J_Root/J_Hips
     extraUserProperties: []
     clipAnimations: []
     isReadable: 0

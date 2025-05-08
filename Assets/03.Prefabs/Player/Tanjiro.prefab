@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 3759888378372736258}
   - component: {fileID: 6490511474903883097}
   - component: {fileID: 5811416626086197359}
-  - component: {fileID: 3774490159227012108}
   - component: {fileID: 8169233750759239031}
   - component: {fileID: 6956996378229178401}
   m_Layer: 3
@@ -55,10 +54,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   FPSCamPOS: {fileID: 7888611439356115272}
   TPSCamPOS: {fileID: 2440037544109265277}
+  BaseAnimator: {fileID: 0}
   StaminaRecoverySpeed: 1
   YVelocity: 0
   CharacterType: 1
   PlayerData: {fileID: 11400000, guid: 64a1480661363b641b656b229828bc29, type: 2}
+  PlayerModels: []
 --- !u!114 &5811416626086197359
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -71,21 +72,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc9e0738ee23dd745a1a9be63da61587, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &3774490159227012108
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 807744522528268165}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a08868fd462af73419ac1377c71f0a02, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cameraTransform: {fileID: 0}
-  RotationSpeed: 250
-  turnSmoothTime: 0.1
 --- !u!143 &8169233750759239031
 CharacterController:
   m_ObjectHideFlags: 0
@@ -405,7 +391,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 6225516949990496589}
+  m_Father: {fileID: 2906104363342314650}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &501509619328529313
 PrefabInstance:
@@ -557,7 +543,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
-    - targetCorrespondingSourceObject: {fileID: -451682303629000132, guid: bc36acd6ad49f3a47a3b1e9b34e1adc6, type: 3}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: bc36acd6ad49f3a47a3b1e9b34e1adc6, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6916302829746808875}
     m_AddedComponents: []
@@ -565,10 +551,5 @@ PrefabInstance:
 --- !u!4 &2906104363342314650 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: bc36acd6ad49f3a47a3b1e9b34e1adc6, type: 3}
-  m_PrefabInstance: {fileID: 3449255903164259185}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &6225516949990496589 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: -451682303629000132, guid: bc36acd6ad49f3a47a3b1e9b34e1adc6, type: 3}
   m_PrefabInstance: {fileID: 3449255903164259185}
   m_PrefabAsset: {fileID: 0}

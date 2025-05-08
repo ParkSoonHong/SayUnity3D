@@ -4,13 +4,6 @@ using Unity.VisualScripting;
 using UnityEngine;
 using static UnityEditor.Experimental.GraphView.GraphView;
 
-public struct PlayerState
-{
-    public float MoveSpeed;
-    public float MaxRunSpeed;
-    public float RunAcceleration;
-    public float JumpPower;
-}
 
 public class Player : MonoBehaviour , IDamageAble
 {
@@ -20,7 +13,8 @@ public class Player : MonoBehaviour , IDamageAble
     private CharacterController _characterController;
     public CharacterController CharacterController => _characterController;
 
-    private  List<Animator> _animators;
+    private  List<Animator> _tpsAnimators;
+    private  List<Animator> _fpsAnimators;
     public Animator BaseAnimator;
 
     private float _maxStamina = 10;
@@ -40,8 +34,11 @@ public class Player : MonoBehaviour , IDamageAble
 
     public PlayerSO PlayerData;
 
-    public List<GameObject> PlayerModels;
-    private int _curruntModels = 0;
+    public List<GameObject> TPSPlayerModels;
+    public List<GameObject> FPSPlayerModels;
+ 
+   // private int _curruntModels = 1;
+
     private void Awake()
     {
         _characterController = GetComponent<CharacterController>();
@@ -56,14 +53,19 @@ public class Player : MonoBehaviour , IDamageAble
         _maxStamina = PlayerData.MaxStamina;
         _stamina = _maxStamina;
 
-        _curruntModels = (int)CharacterType;
+        _tpsAnimators = new List<Animator>(TPSPlayerModels.Count);
+        _fpsAnimators = new List<Animator>(FPSPlayerModels.Count);
 
-        _animators = new List<Animator>(PlayerModels.Count);
-
-        foreach(GameObject playerModel in PlayerModels)
+        foreach(GameObject playerModel in TPSPlayerModels)
         {
-            _animators.Add(playerModel.GetComponent<Animator>());
+            _tpsAnimators.Add(playerModel.GetComponent<Animator>());
         }
+
+        foreach (GameObject playerModel in FPSPlayerModels)
+        {
+            _fpsAnimators.Add(playerModel.GetComponent<Animator>());
+        }
+        CameraModeManager.Instance.ModeHendleEvent += CamerModeCheck;
 
         PlayerSwap(CharacterType.Nezuko);
     }
@@ -83,8 +85,6 @@ public class Player : MonoBehaviour , IDamageAble
 
     private IEnumerator RecoveryStamina(float waitTime)//스테미너 회복
     {
-     
-
         yield return new WaitForSeconds(waitTime); // 1초뒤 회복 시작
 
         while (_isRecovery) // 현재 회복 중이라면
@@ -125,20 +125,58 @@ public class Player : MonoBehaviour , IDamageAble
         switch (characterType)
         {
             case CharacterType.Nezuko:
-                PlayerModels[_curruntModels].SetActive(false);
-                PlayerModels[(int)characterType].SetActive(true);
+                PlayerViewCheck(characterType);
                 _characterController.radius = 0.4f;
                 _characterController.height = 1.55f;
-                BaseAnimator = _animators[(int)characterType];
+               
                 break;
             case CharacterType.Tanjiro:
-                PlayerModels[_curruntModels].SetActive(false);
-                PlayerModels[(int)characterType].SetActive(true);
+                PlayerViewCheck(characterType);
                 _characterController.radius = 0.4f;
                 _characterController.height = 1.7f;
-                BaseAnimator = _animators[(int)characterType];
                 break;
         }
-        _curruntModels = (int)characterType;
+        CharacterType = characterType;
+    }
+
+    private void CamerModeCheck(CameraMode cameraMode)
+    {
+        PlayerViewCheck(CharacterType);
+    }
+
+    private void PlayerViewCheck(CharacterType characterType)
+    {
+        if(CameraModeManager.Instance.CurrentMode == CameraMode.FPS)
+        {
+            for(int i=0; i < (int)CharacterType.Count; i++)
+            {
+                if(i == (int)characterType)
+                {
+                    TPSPlayerModels[i].SetActive(false);
+                    FPSPlayerModels[i].SetActive(true);
+                    BaseAnimator = _fpsAnimators[(int)characterType];
+                    Debug.Log("FPS");
+                    continue;
+                }
+                TPSPlayerModels[i].SetActive(false);
+                FPSPlayerModels[i].SetActive(false);
+            }
+        }
+        else
+        {
+            for (int i = 0; i < (int)CharacterType.Count; i++)
+            {
+                if (i == (int)characterType)
+                {
+                    FPSPlayerModels[i].SetActive(false);
+                    TPSPlayerModels[i].SetActive(true);
+                    BaseAnimator = _tpsAnimators[(int)characterType];
+                    Debug.Log("TPS");
+                    continue;
+                }
+                TPSPlayerModels[i].SetActive(false);
+                FPSPlayerModels[i].SetActive(false);
+            }
+        }
     }
 }

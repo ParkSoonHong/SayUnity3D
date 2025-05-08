@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -12,8 +13,11 @@ public class PlayerController : MonoBehaviour
 
     private PlayerSkill _playerSkill;
 
+    private PlayerRotate _playerRotate;
+
     private bool _isClimbing = false;
 
+    private bool _isEvent = false;
     private void Awake()
     {
         _player = GetComponent<Player>();
@@ -21,21 +25,28 @@ public class PlayerController : MonoBehaviour
         _playerAction = new PlayerAction(_player);
         _playerAttack = new PlayerAttack(_player);
         _playerSkill = new PlayerSkill(_player);
+        _playerRotate = new PlayerRotate(_player);
     }
 
     private void Update()
     {
-        if (Input.GetMouseButton(0)) 
+        if (_isEvent) return;
+
+        _playerRotate.Rotate();
+
+        if (Input.GetMouseButton(0))
         {
+            StartCoroutine(EventHandler(1));
             _playerAttack.Attack(_player.CharacterType);
+            return;
         }
         // move 를 하다가 벽과 부닿으면 ClimbingMove로 전환
         // 스테미나를 체크해서 달리기
         // 스테미나를 체크해서 구르기
         // 스테미나를 체크해서 벽타기
-        
+
         _playerAction.Jump();
-        ClimbingCheck();
+        Climbing();
 
         if (!_isClimbing)
         {
@@ -44,10 +55,10 @@ public class PlayerController : MonoBehaviour
         }
 
         CharacterSwap();
-        
+
     }
 
-    public void ClimbingCheck()
+    public void Climbing()
     {
         if ((_player.CharacterController.collisionFlags & CollisionFlags.Sides) != 0 && _player.UseStamina(_playerMove.MoveActionStaminaAmount))
         {
@@ -81,15 +92,27 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-             _player.PlayerSwap(CharacterType.Tanjiro);
+            _player.PlayerSwap(CharacterType.Tanjiro);
         }
-        else if(Input.GetKeyDown(KeyCode.Alpha2))
+        else if (Input.GetKeyDown(KeyCode.Alpha2))
         {
             _player.PlayerSwap(CharacterType.Nezuko);
         }
-        else if(Input.GetKeyDown(KeyCode.Alpha3))
+        else if (Input.GetKeyDown(KeyCode.Alpha3))
         {
-            
+
         }
     }
+    private IEnumerator EventHandler(float waitTime)
+    {
+        _isEvent = true;
+        CameraFollow.Instance.isEvent = _isEvent;
+
+        yield return new WaitForSeconds(waitTime);
+ 
+        _isEvent = false;
+        CameraFollow.Instance.isEvent = _isEvent;
+        yield break;
+    }
+
 }

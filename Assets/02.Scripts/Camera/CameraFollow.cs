@@ -23,8 +23,10 @@ public class CameraFollow : MonoBehaviour
     public float MaxPitch = 60f; // 피치 제한
 
     private Vector3 _velocity = Vector3.zero;     // 위치 보간용
-    private float _yaw = 0f;
-    private float _pitch = 10f;         // 누적 각도
+    public float Yaw = 0f;
+    public float Pitch = 10f;         // 누적 각도
+
+    public bool isEvent = false;
 
     private void Awake()
     {
@@ -41,52 +43,27 @@ public class CameraFollow : MonoBehaviour
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
+        Yaw = FPSCamPOS.rotation.y;
+        Pitch = FPSCamPOS.rotation.x;
     }
 
     private void LateUpdate()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha8))
+        switch (CameraModeManager.Instance.CurrentMode)
         {
-            _camPosCount = 0;
-            Cursor.lockState = CursorLockMode.Locked;
-            // 보간 기법 interpoling, smooting 기법이 들어갈 예정
-        }
-
-        if (Input.GetKeyDown(KeyCode.Alpha9))
-        {
-            _camPosCount = 1;
-            Cursor.lockState = CursorLockMode.None;
-            // 보간 기법 interpoling, smooting 기법이 들어갈 예정
-        }
-
-        if (Input.GetKeyDown(KeyCode.Alpha0))
-        {
-            transform.rotation = Quaternion.Euler(new Vector3(45f, 45f, 0f));
-            Cursor.lockState = CursorLockMode.Locked;
-            _camPosCount = 2;
-            // 보간 기법 interpoling, smooting 기법이 들어갈 예정
-        }
-
-        CameraPosition();
-    }
-
-    public void CameraPosition()
-    {
-        if (FPSCamPOS == null || TPSCamPOS == null) return;
-
-        switch(_camPosCount)
-        {
-            case 0:
+            case CameraMode.FPS:
                 {
+                    if (isEvent) return;
+
                     FPSView();
                     break;
                 }
-            case 1:
+            case CameraMode.TPS:
                 {
                     TPSView();
                     break;
                 }
-            case 2:
+            case CameraMode.QUARTER:
                 {
                     QuarterView();
                     break;
@@ -101,32 +78,14 @@ public class CameraFollow : MonoBehaviour
 
     private void TPSView()
     {
-        // 1) 마우스 입력
-        float mouseX = Input.GetAxis("Mouse X");
-        float mouseY = Input.GetAxis("Mouse Y");  
-
-        // 2) 누적 회전값 업데이트
-        _yaw += mouseX * RotateSpeed * Time.deltaTime;
-        _pitch += mouseY * RotateSpeed * Time.deltaTime;
-        _pitch = Mathf.Clamp(_pitch, MinPitch, MaxPitch); 
-
-        // 3) 사구면 좌표로 오프셋 회전
-        Quaternion rot = Quaternion.Euler(_pitch, _yaw, 0f);
-        Vector3 desiredPos = TPSCamPOS.position + rot * TPSViewOffset;
-
-        // 4) 위치 즉시 적용
-        transform.position = desiredPos;
+        Quaternion orbitRot = Quaternion.Euler(Pitch, Yaw, 0f);
+        transform.position = TPSCamPOS.position + orbitRot * TPSViewOffset;
     }
 
 
     private void QuarterView()
     {
-        // 목표 위치: 플레이어 + offset
-        Vector3 targetPos = FPSCamPOS.position + QuarterViewOffset;
-        // 부드러운 위치 보간
-        transform.position = Vector3.Lerp(
-            transform.position, targetPos,
-            FollowSmooth
-        );
+        Vector3 target = FPSCamPOS.position + QuarterViewOffset;
+        transform.position = Vector3.Lerp(transform.position, target, FollowSmooth);
     }
 }

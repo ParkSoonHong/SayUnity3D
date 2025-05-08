@@ -160,7 +160,6 @@ GameObject:
   - component: {fileID: 684036591639531072}
   - component: {fileID: 8716617825474371050}
   - component: {fileID: 1540804655906943454}
-  - component: {fileID: 4023797978731286009}
   - component: {fileID: 1668909601570317554}
   - component: {fileID: 3979631309596489676}
   m_Layer: 3
@@ -203,10 +202,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   FPSCamPOS: {fileID: 7168226954179221723}
   TPSCamPOS: {fileID: 8046297548141527187}
+  BaseAnimator: {fileID: 0}
   StaminaRecoverySpeed: 1
   YVelocity: 0
   CharacterType: 0
   PlayerData: {fileID: 11400000, guid: 64a1480661363b641b656b229828bc29, type: 2}
+  PlayerModels: []
 --- !u!114 &1540804655906943454
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -219,21 +220,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc9e0738ee23dd745a1a9be63da61587, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &4023797978731286009
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7794047654923569157}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a08868fd462af73419ac1377c71f0a02, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cameraTransform: {fileID: 0}
-  RotationSpeed: 250
-  turnSmoothTime: 0.1
 --- !u!143 &1668909601570317554
 CharacterController:
   m_ObjectHideFlags: 0

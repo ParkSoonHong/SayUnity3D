@@ -15,7 +15,6 @@ public class PlayerAction
 
     private bool _isJumping = false;
     private bool _isRoll = false;
-    private bool _isClimbing = false;
 
     // 사용하는 액션에 스테미나 감소량
     public float RollStaminaAmout = 3f;
@@ -39,24 +38,19 @@ public class PlayerAction
 
     public void Jump()
     {
-        /*
-        if (Input.GetButtonDown("Jump") && _isClimbing == true)
-        {
-            _isRecovery = true;
-            _isClimbing = false;
-            return;
-        }
-        */
         // 캐릭터가 땅 위에 있다면
         if (_player.CharacterController.isGrounded)
         {
             _isJumping = false;
             _jumpCount = _maxJumpCount;
+           _player.BaseAnimator.SetBool("Land", true);
+            Debug.Log("LAND");
         }
 
         // 3. 점프 적용
         if (Input.GetButtonDown("Jump") && _isJumping == false)
         {
+            _player.BaseAnimator.SetTrigger("Jump");
             _player.YVelocity = _jumpPower;
             _jumpCount--;
 

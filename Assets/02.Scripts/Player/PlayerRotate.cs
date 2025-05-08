@@ -1,63 +1,43 @@
 using System;
 using UnityEngine;
 
-public class PlayerRotate : MonoBehaviour
+public class PlayerRotate 
 {
     public Transform cameraTransform; 
 
-    public float RotationSpeed = 150;
+    public float RotationSpeed = 250;
 
     private float _rotationX = 0;
 
-    private int _camPosCount = 0;
-
     public float turnSmoothTime = 0.1f;
-    private float turnSmoothVelocity;
 
-    private void Start()
+    private Player _player;
+    public PlayerRotate(Player player)
+    {
+        _player = player;
+        Initialized();
+    }
+
+    private void Initialized()
     {
         cameraTransform = Camera.main.transform;
     }
 
-    void Update()
+    public void Rotate()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha8))
+        switch (CameraModeManager.Instance.CurrentMode)
         {
-            _camPosCount = 0;
-            // 보간 기법 interpoling, smooting 기법이 들어갈 예정
-        }
-
-        if (Input.GetKeyDown(KeyCode.Alpha9))
-        {
-            _camPosCount = 1;
-            // 보간 기법 interpoling, smooting 기법이 들어갈 예정
-        }
-
-        if (Input.GetKeyDown(KeyCode.Alpha0))
-        {
-            transform.rotation = Quaternion.Euler(new Vector3(45f, 45f, 0f));
-            _camPosCount = 2;
-            // 보간 기법 interpoling, smooting 기법이 들어갈 예정
-        }
-
-        CameraPosition();
-    }
-
-    public void CameraPosition()
-    {
-        switch (_camPosCount)
-        {
-            case 0:
+            case CameraMode.FPS:
                 {
                     FPSView();
                     break;
                 }
-            case 1:
+            case CameraMode.TPS:
                 {
                     TPSView();
                     break;
                 }
-            case 2:
+            case CameraMode.QUARTER:
                 {
                     QuarterView();
                     break;
@@ -72,33 +52,46 @@ public class PlayerRotate : MonoBehaviour
 
         // 2. 회전한 양만큼 누적시켜 나간다.
         _rotationX += mouseX * RotationSpeed * Time.deltaTime;
-        transform.eulerAngles = new Vector3(0, _rotationX, 0);
+        _player.transform.eulerAngles = new Vector3(0, _rotationX, 0);
     }
-
+    float turnSmoothVelocity;
     private void TPSView()
     {
-        // 1) 입력 축값을 가져와 벡터로 만든 뒤 정규화합니다.
-        float h = Input.GetAxis("Horizontal");  
-        float v = Input.GetAxis("Vertical");    
+        // 1) 입력
+        float h = Input.GetAxisRaw("Horizontal");
+        float v = Input.GetAxisRaw("Vertical");
         Vector3 inputDir = new Vector3(h, 0f, v).normalized;
 
-        // 2) 입력이 일정 값 이상일 때만 회전하도록 조건을 겁니다.
-        if (inputDir.magnitude >= 0.1f)
-        {
-            // 3) 입력 벡터의 각도를 라디안→도 단위로 변환합니다.
-            float targetAngle = Mathf.Atan2(inputDir.x, inputDir.z) * Mathf.Rad2Deg; 
+        // 2) 입력이 없으면 아무 것도 하지 않음
+        if (inputDir.magnitude < 0.1f)
+            return;
 
-            // 혹시 카메라 기준 방향으로 회전시키고 싶으면 카메라의 Y 회전값을 더해줍니다.
-            if (cameraTransform != null)
-                targetAngle += cameraTransform.eulerAngles.y;  
+        // 3) 카메라 기준 이동 방향 계산
+        Vector3 camForward = cameraTransform.forward;
+        camForward.y = 0;
+        camForward.Normalize();
 
-            // 4) Quaternion.Euler을 사용해 Y축 회전을 바로 적용합니다.
-            transform.rotation = Quaternion.Euler(0f, targetAngle, 0f); 
-        }
+        Vector3 camRight = cameraTransform.right;
+        camRight.y = 0;
+        camRight.Normalize();
+
+        Vector3 moveDir = camRight * inputDir.x + camForward * inputDir.z;
+
+        // 4) 목표 회전 각도 계산 (카메라 기준)
+        float targetAngle = Mathf.Atan2(moveDir.x, moveDir.z) * Mathf.Rad2Deg;
+        // 5) 부드러운 회전
+        float angle = Mathf.SmoothDampAngle(
+            _player.transform.eulerAngles.y,
+            targetAngle,
+            ref turnSmoothVelocity,
+            turnSmoothTime
+        );
+        _player.transform.rotation = Quaternion.Euler(0f, angle, 0f);  // 캐릭터 회전 :contentReference[oaicite:1]{index=1}
+
     }
 
     private void QuarterView()
     {
-     
+       // transform.rotation = Quaternion.Euler(new Vector3(45f, 45f, 0f));
     }
 }
