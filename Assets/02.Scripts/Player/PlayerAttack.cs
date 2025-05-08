@@ -24,27 +24,18 @@ public class PlayerAttack
 
     // 파이어 관련
     private int _maxWeaponCount = 10;
-
-    private float _maxThroPower = 30;
-
     private float _inithrowPower = 15f;
     private float _throwPower;
-    private float _throwPoweAccretionr = 10;
 
     private Camera _mainCamera; // 캐싱을 해라
 
     public int Damage = 10;
     public int WeaponKnockback = 200;
 
-   // public ParticleSystem BulletEffectPrefab;
-    private float _timar = 0;
-
     public float angleRange = 30f;
     public float radius = 3f;
 
     private Damage _damage;
-
-    private bool _isAttack = false;
 
     public PlayerAttack(Player player)
     {

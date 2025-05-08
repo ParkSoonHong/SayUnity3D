@@ -13,8 +13,6 @@ public class PlayerManager : MonoBehaviour
 
     private List<PlayerSO> _playerDatas; // 나중에 교체
 
-    private int _cruuntIndex = 0;
-
     private void Awake()
     {
         if(Instance == null) 

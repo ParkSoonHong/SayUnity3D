@@ -78,7 +78,7 @@ public class Player : MonoBehaviour , IDamageAble
         }
 
         _stamina -= StaminaAmount;
-        UI_Manager.Instance.UpdatePlayerStamina(_stamina / _maxStamina);
+        UI_HUDManager.Instance.UpdatePlayerStamina(_stamina / _maxStamina);
         _isRecovery = false;
         return true;
     }
@@ -92,13 +92,13 @@ public class Player : MonoBehaviour , IDamageAble
             if (_stamina >= _maxStamina) // 현재가 최대를 넘어가면 
             {
                 _stamina = _maxStamina;
-                UI_Manager.Instance.UpdatePlayerStamina(_stamina / _maxStamina);
+                UI_HUDManager.Instance.UpdatePlayerStamina(_stamina / _maxStamina);
                 _isRecovery = false;
                 break;
             }
 
             _stamina += StaminaRecoverySpeed;
-            UI_Manager.Instance.UpdatePlayerStamina(_stamina /_maxStamina);
+            UI_HUDManager.Instance.UpdatePlayerStamina(_stamina /_maxStamina);
         }
 
         yield break;
@@ -107,7 +107,7 @@ public class Player : MonoBehaviour , IDamageAble
     public void TakeDamage(Damage damage)
     {
         _health -= damage.Value;
-        UI_Manager.Instance.UpdateHealth(_health/_maxhealth);
+        UI_HUDManager.Instance.UpdateHealth(_health/_maxhealth);
         if(_health <= 0)
         {
             // 죽음
