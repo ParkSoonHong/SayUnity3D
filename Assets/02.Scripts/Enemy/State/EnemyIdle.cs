@@ -7,7 +7,6 @@ public class EnemyIdle : IFSM
 
     private Enemy _enemy;
 
-    private bool _isStarted = false;
     public EnemyIdle(Enemy enemy)
     {
         _enemy = enemy;
@@ -22,14 +21,9 @@ public class EnemyIdle : IFSM
     public void Start() // 시작시 필요
     {
         _enemy.Agent.isStopped = false;
-        _isStarted = false;
     }
     public EEnemyState Update()
     {
-        if(_isStarted == false)
-        {
-            Start();
-        }
 
         if (_enemy.TryFindTarget()) // 발견
         {

@@ -6,7 +6,6 @@ public class EnemyDamaged : IFSM
     private float _damagedTime = 0.5f;
     private float _deathTime = 2f;
 
-    private bool _isStarted = false;
 
     private Enemy _enemy;
     public EnemyDamaged(Enemy enemy)
@@ -25,7 +24,7 @@ public class EnemyDamaged : IFSM
     public void Start() // 시작시 필요
     {
         _enemy.Agent.isStopped = false;
-        _isStarted = false;
+        _enemy.StartCoroutine(Damaged_Coroutine());
     }
     public EEnemyState Update()
     {

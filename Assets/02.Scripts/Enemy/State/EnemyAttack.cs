@@ -8,7 +8,6 @@ public class EnemyAttack : IFSM
     public float AttackCoolTime = 2f;
 
     private Damage _damage;
-    private bool _isStarted = false;
 
     private Enemy _enemy;
     public EnemyAttack(Enemy enemy)
@@ -25,16 +24,10 @@ public class EnemyAttack : IFSM
 
     public void Start()
     {
-        _isStarted = true;
         _enemy.StartCoroutine(Attack_Coroutine());
     }
     public EEnemyState Update()
     {
-        if (_isStarted == false)
-        {
-            Start();
-        }
-
         if (_enemy.TryFindTarget() == false) // 상대를 못찾으면
         {
             _attackTimer = 0;
@@ -54,7 +47,6 @@ public class EnemyAttack : IFSM
     }
     public void End()
     {
-        _isStarted = false;
     }
     public IEnumerator Attack_Coroutine()
     {

@@ -44,7 +44,6 @@ public class PlayerAction
             _isJumping = false;
             _jumpCount = _maxJumpCount;
            _player.BaseAnimator.SetBool("Land", true);
-            Debug.Log("LAND");
         }
 
         // 3. 점프 적용

@@ -3,7 +3,12 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
-
+public enum EnemyType
+{
+    Nomal, // 일반몹
+    Elite, // 엘리트 몬스터
+    Boss   // 보스 몬스터
+}
 
 public class Enemy : MonoBehaviour
 {
@@ -11,13 +16,13 @@ public class Enemy : MonoBehaviour
     private GameObject _player;
     public GameObject Player => _player;
 
-    private NavMeshAgent _agent;
-    public NavMeshAgent Agent => _agent;
+    public NavMeshAgent Agent;
 
     private CharacterController _characterController;
 
     public EnemyDataSo EnemyData;
     public UI_Enemy UI_Enemy;
+    // 애니메이션
 
     public float FindDistance = 7f;
     public float ReturnDistance = 5f;
@@ -27,14 +32,15 @@ public class Enemy : MonoBehaviour
     private float _health = 0;
     public float Helath => _health;
 
-    public void Start()
+
+    private void Awake()
     {
         _player = GameObject.FindGameObjectWithTag("Player");
         _characterController = GetComponent<CharacterController>();
-        _agent = GetComponent<NavMeshAgent>();
-        
+        Agent = GetComponent<NavMeshAgent>();
+        Agent.speed = EnemyData.MoveSpeed;
+      
         _health = _maxHealth;
-
     }
 
     public void TakeDamage(Damage damage)

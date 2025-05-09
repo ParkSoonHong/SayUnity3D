@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class EnemyPatrol 
+public class EnemyPatrol : IFSM
 {
     private List<Vector3> _patrolPoints;
     private Vector3 _patrolMaxRange;
@@ -11,10 +11,8 @@ public class EnemyPatrol
 
     private int _totalPatrolCount;
 
-    private bool _isStarted = false;
-
     private Enemy _enemy;
-
+  
     public EnemyPatrol(Enemy enemy)
     {
         _enemy = enemy;
@@ -34,16 +32,11 @@ public class EnemyPatrol
 
     public void Start()
     {
-        _isStarted = true;
+        SetNextPatrolPoint();
     }
 
     public EEnemyState Update()
     {
-        if(_isStarted == false)
-        {
-            Start();
-        }
-
         if (_enemy.TryFindTarget())
         {
             return EEnemyState.Trace;

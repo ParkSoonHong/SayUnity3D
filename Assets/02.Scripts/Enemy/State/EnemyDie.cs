@@ -23,16 +23,12 @@ public class EnemyDie : IFSM
 
     public void Start()
     {
-        _isStarted = true;
+       _enemy.StartCoroutine(Die_coruotin());
     }
 
     // Update is called once per frame
     public EEnemyState Update()
     {
-        if (_isStarted == false)
-        {
-            Start();
-        }
         return EEnemyState.Die;
     }
 

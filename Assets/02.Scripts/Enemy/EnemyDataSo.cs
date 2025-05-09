@@ -1,14 +1,11 @@
+using System;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "EnemyDataSo", menuName = "Scriptable Objects/EnemyDataSo")]
 public class EnemyDataSo : ScriptableObject
 {
-    public enum EnemyType
-    {
-        Nomal, // 일반몹
-        Elite, // 엘리트 몬스터
-        Boss   // 보스 몬스터
-    }
+   
+    public EnemyType EnemyType = EnemyType.Nomal;
 
     [Header("스테이터스")]
     public int Health = 100;

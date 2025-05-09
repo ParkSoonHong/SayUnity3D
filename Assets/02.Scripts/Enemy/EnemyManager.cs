@@ -6,10 +6,10 @@ public class EnemyManager : MonoBehaviour
 
     public static EnemyManager Instance = null;
 
-    public List<Enemy> _enemyList;
+    public List<GameObject> EnemyList;
 
-    private List<Enemy> _spawnEnemyList;
-    public List<Enemy> SpawnEnemyList => _spawnEnemyList;
+    private List<GameObject> _spawnEnemyList;
+    public List<GameObject> SpawnEnemyList => _spawnEnemyList;
 
     public int EnemySpawnCount = 10;
 
@@ -23,19 +23,23 @@ public class EnemyManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        _spawnEnemyList = new List<Enemy>(_enemyList.Count * EnemySpawnCount);
+        _spawnEnemyList = new List<GameObject>(EnemyList.Count * EnemySpawnCount);
+       
+    }
+
+    private void Start()
+    {
         EnemyPool();
     }
 
     private void EnemyPool()
     {
-        for(int i=0; i< _enemyList.Count; i++)
+        for(int i=0; i< EnemyList.Count; i++)
         {
             for(int j=0; j< EnemySpawnCount; j++)
             {
-                Enemy enemy = Instantiate(_enemyList[i],this.transform);
+                GameObject enemy = Instantiate(EnemyList[i],this.transform);
                 enemy.gameObject.SetActive(false);
-                // enemy.Initialize();
                 _spawnEnemyList.Add(enemy);
             }
         }

@@ -408,6 +408,7 @@ GameObject:
   m_Component:
   - component: {fileID: 815884261721696801}
   - component: {fileID: 236925306845225602}
+  - component: {fileID: -7248603129539504306}
   - component: {fileID: 4154331526966056787}
   - component: {fileID: 3373691858470399732}
   m_Layer: 7
@@ -460,6 +461,18 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &-7248603129539504306
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6783152819888341011}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 071b25764825bcd469b424015c812fa2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &4154331526966056787
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -472,23 +485,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34a743bf8908b564c870519bb29572ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CurrentState: 0
+  EnemyData: {fileID: 11400000, guid: f59742081647e8645915598979bdc2b6, type: 2}
   UI_Enemy: {fileID: 5687275299305540409}
   FindDistance: 7
-  AttackDistance: 2
   ReturnDistance: 7
-  MoveSpeed: 3.3
-  DeathTime: 2
-  AttackCoolTime: 2
-  Damage: 10
-  knockbackPower: 100
-  DamagedTime: 0.5
-  PatrolTime: 2
-  PatrolPoints:
-  - {x: -10, y: 1, z: -10}
-  - {x: -20, y: 1, z: -10}
-  - {x: -20, y: 1, z: -20}
-  MovePointDistance: 0.1
+  AttackDistance: 2
 --- !u!195 &3373691858470399732
 NavMeshAgent:
   m_ObjectHideFlags: 0

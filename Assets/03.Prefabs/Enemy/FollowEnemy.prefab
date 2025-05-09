@@ -601,20 +601,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 662b36f5ad0a64b40a9805a78846c063, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CurrentState: 1
+  EnemyData: {fileID: 11400000, guid: 057e52051a76af8499c539f3a13f5000, type: 2}
   UI_Enemy: {fileID: 7841096513620467104}
   FindDistance: 500
-  AttackDistance: 2
   ReturnDistance: 5
-  MoveSpeed: 3.3
-  DeathTime: 2
-  AttackCoolTime: 2
-  Damage: 10
-  knockbackPower: 100
-  DamagedTime: 0.5
-  PatrolTime: 2
-  PatrolPoints: []
-  MovePointDistance: 0.1
+  AttackDistance: 2
 --- !u!195 &7552617010895332028
 NavMeshAgent:
   m_ObjectHideFlags: 0

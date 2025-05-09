@@ -1,0 +1,171 @@
+using System;
+using System.Security.Cryptography;
+using System.Text;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
+using UnityEditor;
+using UnityEngine.SceneManagement;
+
+[Serializable]
+public class UI_IputFields
+{
+    public TextMeshProUGUI ResultText; 
+    public TMP_InputField IDInputField;
+    public TMP_InputField PasswordInputFielid;
+    public TMP_InputField PasswordComfirmInputField;
+    public Button ConfirmButton;
+
+}
+
+public class UI_LoginScene : MonoBehaviour
+{
+    [Header("패널")]
+    public GameObject LoginPanel;
+    public GameObject ResisterPanel;
+
+
+    [Header("로그인")]
+    public UI_IputFields LoginInputFields;
+
+    [Header("회원가입")]
+    public UI_IputFields RegisterInputFields;
+
+    private const string SALT = "k2";
+    private const string PREFIX = "ID_";
+
+    private void Start()
+    {
+        LoginPanel.SetActive(true);
+        ResisterPanel.SetActive(false);
+
+        LoginInputFields.ResultText.text = string.Empty;
+        RegisterInputFields.ResultText.text = string.Empty;
+        
+        LoginCheck();
+    }
+
+    public void OnClickGoToResiterButton()
+    {
+        LoginPanel.SetActive(false);
+        ResisterPanel.SetActive(true);
+    }
+
+    public void OnClickGoToLoginButton()
+    {
+        LoginPanel.SetActive(true);
+        ResisterPanel.SetActive(false);
+    }
+
+    // 회원가입
+    public void Resister()
+    {
+        // 1. 아이디 입력을 확인한다.
+        string id = RegisterInputFields.IDInputField.text;
+        if (string.IsNullOrEmpty(id))
+        {
+            RegisterInputFields.ResultText.text = "아이디를 입력해주세요.";
+            return;
+        }
+
+        // 2. 1차 비밀번호 입력을 확인한다.
+        string Password = RegisterInputFields.PasswordInputFielid.text;
+        if (string.IsNullOrEmpty(Password))
+        {
+            RegisterInputFields.ResultText.text = "비밀번호를 입력해주세요.";
+            return;
+        }
+
+
+        // 3. 2차 비밀번호 입력을 확인하고, 1차 비밀번호 입력과 같은지 확인한다.
+        string PasswordComfirm = RegisterInputFields.PasswordComfirmInputField.text;
+        if (string.IsNullOrEmpty(PasswordComfirm) )
+        {
+            RegisterInputFields.ResultText.text = "비밀번호를 확인해주세요.";
+            return;
+        }
+        
+
+        if (Password != PasswordComfirm)
+        {
+            RegisterInputFields.ResultText.text = "비밀번호를 확인해주세요.";
+            return;
+        }
+
+
+        // 4. PlayerPrefs를 이용해서 아이디와 비밀번호를 저장한다.
+        PlayerPrefs.SetString(PREFIX + id, Encryption(Password + SALT));
+
+        // 5. 로그인 창으로 돌아간다. (이때 아이디는 자동 입력되어 있다.)
+       // LoginInputFields.IDInputField.text = id;
+        OnClickGoToLoginButton();
+    }
+
+    public string Encryption (string text)
+    {
+        // 해시 암호화 알고리즘 인스턴스를 생성한다.
+        SHA256 sha256 = SHA256.Create();
+
+        // 운영체제 혹은 프로그래밍 언어별로 string 표현하는 방식이 다 다르므로
+        // UTF8 버전 바이트로 배열로 바꿔야한다.
+        byte[] bytes = Encoding.UTF8.GetBytes(text);
+        byte[] hash = sha256.ComputeHash(bytes);
+
+        string resultText = string.Empty;
+        foreach (byte b in hash)
+        {
+            // byte를 다시 string으로 바꿔서 이어붙이기
+            resultText += b.ToString("X2");
+        }
+
+        return resultText;
+    }
+
+    public void Login()
+    {
+        // 1. 아이디 입력을 확인한다.
+        string id = LoginInputFields.IDInputField.text;
+        if (string.IsNullOrEmpty(id))
+        {
+            LoginInputFields.ResultText.text = "아이디를 입력해주세요.";
+            return;
+        }
+
+        // 2. 1차 비밀번호 입력을 확인한다.
+        string Password = LoginInputFields.PasswordInputFielid.text;
+        if (string.IsNullOrEmpty(Password))
+        {
+            LoginInputFields.ResultText.text = "비밀번호를 입력해주세요.";
+            return;
+        }
+
+        //3. playerPrefs.Get을 이용해서 아이디와 비밀번호가 맞는지 확인한다.
+        if(!PlayerPrefs.HasKey(PREFIX + id))
+        {
+            LoginInputFields.ResultText.text = "아이디와 비밀번호를 확인해주세요.";
+            return;
+        }
+
+        string hashedPassword = PlayerPrefs.GetString(PREFIX + id);
+        if(hashedPassword != Encryption(Password + SALT))
+        {
+            LoginInputFields.ResultText.text = "아이디와 비밀번호를 확인해주세요.";
+            return;
+        }
+
+
+        //4. 맞다면 로그인
+        Debug.Log("로그인 성공");
+        SceneManager.LoadScene(1);
+    }
+
+
+    // 아이디와 비밀번호 InputField 값이 바뀌었을 경우에만 
+    public void LoginCheck()
+    {
+        string id = LoginInputFields.IDInputField.text;
+        string password = LoginInputFields.PasswordInputFielid.text;
+
+        LoginInputFields.ConfirmButton.enabled = !string.IsNullOrEmpty(id) && !string.IsNullOrEmpty(password);
+    }
+}

@@ -10,7 +10,7 @@ public class EnemySpawner : MonoBehaviour
     public float MaxSpawnRange = 4;  
     public float MinSpawnRange = 1;
 
-    private List<Enemy> _enemyLists;
+    private List<GameObject> _enemyLists;
 
     public float WatiTime;
 
@@ -36,9 +36,9 @@ public class EnemySpawner : MonoBehaviour
         while(spawnStart)
         {
             yield return _baseWait;
-            foreach (Enemy enemy in _enemyLists)
+            foreach (GameObject enemy in _enemyLists)
             {
-                if (enemy != null && enemy.isActiveAndEnabled == false)
+                if (enemy != null && enemy.gameObject.activeInHierarchy == false)
                 {
                     enemy.transform.position = transform.position * UnityEngine.Random.Range(MinSpawnRange, MaxSpawnRange);
                     enemy.gameObject.SetActive(true);
