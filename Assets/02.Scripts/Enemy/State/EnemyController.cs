@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -23,44 +24,84 @@ public enum EEnemyState
 public class EnemyController : MonoBehaviour, IDamageAble
 {
     private EEnemyState _currentState = EEnemyState.Idle;
+
+    public EEnemyState CurrentState => _currentState;
     private Dictionary<EEnemyState, IFSM> _stateMap;
     private Enemy _enemy;
-    /*
-    private EnemyIdle _enemyIdle;
-    private EnemyReturn _enemyReturn;
-    private EnemyPatrol _enemyPatrol;
-    private EnemyAttack _enemyAttack;
-    private EnemyDamaged _enemyDamaged;
-    private EnemyTrace _enemyTrace;
-    private EnemyDie _enemyDie;
-    */
+  
     private void Awake()
     {
         _enemy = GetComponent<Enemy>();
-
-        // 딕셔너리에 상태 객체 등록
-        _stateMap = new Dictionary<EEnemyState, IFSM>
-        {
-            { EEnemyState.Idle,    new EnemyIdle(_enemy) },
-            { EEnemyState.Trace,   new EnemyTrace(_enemy) },
-            { EEnemyState.Return,  new EnemyReturn(_enemy) },
-            { EEnemyState.Patrol,  new EnemyPatrol(_enemy) },
-            { EEnemyState.Attack,  new EnemyAttack(_enemy) },
-            { EEnemyState.Damaged, new EnemyDamaged(_enemy) },
-            { EEnemyState.Die,     new EnemyDie(_enemy) }
-        };
-
-        _currentState = EEnemyState.Idle;
-        _stateMap[_currentState].Start();
+        Initialize();
     }
 
     private void Update()
     {
         EEnemyState nextState = _stateMap[_currentState].Update();
+        Debug.Log(nextState);
         if (nextState != _currentState)
         {
             ChangeState(nextState);
         }
+    }
+
+    private void Initialize()
+    {
+        _stateMap = new Dictionary<EEnemyState, IFSM>();
+        // 딕셔너리에 상태 객체 등록
+        foreach (EEnemyState state in _enemy.EnemyData.AvailableStates)
+        {
+            _stateMap[state] = CreateStateInstance(state);
+        }
+        // 최소한 Idle, trace 상태는 항상 있어야 함을 보장
+        if (!_stateMap.ContainsKey(EEnemyState.Idle))
+        {
+            _stateMap.Add(EEnemyState.Idle, new EnemyIdle(_enemy));
+        }
+
+        if (!_stateMap.ContainsKey(EEnemyState.Trace))
+        {
+            _stateMap.Add(EEnemyState.Trace, new EnemyTrace(_enemy));
+        }
+
+        _currentState = EEnemyState.Idle;
+        _stateMap[_currentState].Start();
+    }
+
+    private IFSM CreateStateInstance(EEnemyState state) 
+    {
+        switch (state)
+        {
+            case EEnemyState.Idle:
+                {
+                    return  new EnemyIdle(_enemy);
+                }
+            case EEnemyState.Trace:
+                {
+                    return new EnemyTrace(_enemy);
+                }
+            case EEnemyState.Return:
+                {
+                    return new EnemyReturn(_enemy);
+                }
+            case EEnemyState.Attack:
+                {
+                 return new EnemyAttack(_enemy);
+                }
+            case EEnemyState.Damaged:
+                {
+                    return new EnemyDamaged(_enemy);
+                }
+            case EEnemyState.Patrol:
+                {
+                    return new EnemyPatrol(_enemy);
+                }
+            case EEnemyState.Die:
+                {
+                    return new EnemyDie(_enemy);
+                }
+        }
+        return null;
     }
 
     private void ChangeState(EEnemyState nextState)
@@ -97,6 +138,6 @@ public class EnemyController : MonoBehaviour, IDamageAble
         ChangeState(EEnemyState.Damaged);
        
     }
-   
+
 
 }

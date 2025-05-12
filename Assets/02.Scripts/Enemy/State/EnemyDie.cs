@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using UnityEditor.Rendering;
 using UnityEngine;
 
 public class EnemyDie : IFSM
@@ -23,7 +24,7 @@ public class EnemyDie : IFSM
 
     public void Start()
     {
-       _enemy.StartCoroutine(Die_coruotin());
+       _enemy.StartCoroutine(Die_Coroutine());
     }
 
     // Update is called once per frame
@@ -37,13 +38,17 @@ public class EnemyDie : IFSM
 
     }
 
-    public IEnumerator Die_coruotin()
+    public IEnumerator Die_Coroutine()
     {
-        Vector3 dir = _enemy.transform.position;
-        dir.z -= Time.deltaTime * 1;
-        _enemy.transform.position = dir;
-
-        yield return new WaitForSeconds(_deathTime);
+        float dieTimer = 0;
+        while(dieTimer < _deathTime)
+        {
+            dieTimer += Time.deltaTime;
+            Vector3 dir = _enemy.transform.position;
+            dir.z -= Time.deltaTime * 1;
+            _enemy.transform.position = dir;
+        }
+       
         _enemy.gameObject.SetActive(false);
         yield break;
     }

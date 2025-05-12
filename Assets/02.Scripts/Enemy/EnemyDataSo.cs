@@ -4,7 +4,9 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "EnemyDataSo", menuName = "Scriptable Objects/EnemyDataSo")]
 public class EnemyDataSo : ScriptableObject
 {
-   
+
+    [Header("상태")]
+    public EEnemyState[] AvailableStates;
     public EnemyType EnemyType = EnemyType.Nomal;
 
     [Header("스테이터스")]
@@ -29,4 +31,9 @@ public class EnemyDataSo : ScriptableObject
 
     [Header("죽음")]
     public float DeathTime = 1f;
+
+    [Header("공격")]
+    public float AttackCoolTime = 2f;
+    public float AttackAngleRange = 30f;
+    public float AttackRadius = 3f;
 }

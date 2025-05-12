@@ -13,8 +13,7 @@ public enum EnemyType
 public class Enemy : MonoBehaviour
 {
 
-    private GameObject _player;
-    public GameObject Player => _player;
+    public GameObject Player;
 
     public NavMeshAgent Agent;
 
@@ -32,13 +31,11 @@ public class Enemy : MonoBehaviour
     private float _health = 0;
     public float Helath => _health;
 
-
     private void Awake()
     {
-        _player = GameObject.FindGameObjectWithTag("Player");
+        Player = GameObject.FindGameObjectWithTag("Player");
         _characterController = GetComponent<CharacterController>();
         Agent = GetComponent<NavMeshAgent>();
-        Agent.speed = EnemyData.MoveSpeed;
       
         _health = _maxHealth;
     }

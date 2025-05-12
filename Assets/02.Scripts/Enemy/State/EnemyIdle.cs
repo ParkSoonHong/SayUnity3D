@@ -20,7 +20,7 @@ public class EnemyIdle : IFSM
 
     public void Start() // 시작시 필요
     {
-        _enemy.Agent.isStopped = false;
+        
     }
     public EEnemyState Update()
     {

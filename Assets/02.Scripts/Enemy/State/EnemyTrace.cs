@@ -3,11 +3,9 @@ using UnityEngine.AI;
 
 public class EnemyTrace : IFSM
 {
-    private Vector3 _startPosition;
 
     private Enemy _enemy;
 
-    private GameObject _player;
 
     public EnemyTrace(Enemy enemy)
     {
@@ -17,13 +15,13 @@ public class EnemyTrace : IFSM
 
     private void Initialize()
     {
-        _startPosition = _enemy.transform.position;
+        _enemy.Agent.speed = _enemy.EnemyData.MoveSpeed;
     }
 
     public void Start()
     {
         _enemy.Agent.isStopped = false;
-        _enemy.Agent.SetDestination(_player.transform.position);
+        _enemy.Agent.SetDestination(_enemy.Player.transform.position);
     }
     public EEnemyState Update()
     {

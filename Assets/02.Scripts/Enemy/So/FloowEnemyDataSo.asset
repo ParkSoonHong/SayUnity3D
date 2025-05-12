@@ -12,16 +12,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17e02eeebebbd09409047ba64700a3b8, type: 3}
   m_Name: FloowEnemyDataSo
   m_EditorClassIdentifier: 
+  AvailableStates: 000000000100000003000000
+  EnemyType: 0
   Health: 100
   MoveSpeed: 3.3
   DamagePower: 10
   KnockbackPower: 200
   MovePointDistance: 0.1
-  FindDistance: 7
-  ReturnDistance: 5
+  FindDistance: 150000
+  ReturnDistance: 150000
   AttackDistance: 2
   TotalPatrolCount: 3
   PatrolTime: 2
   PatrolMaxRange: {x: 10, y: 10, z: 0}
   PatrolMinRange: {x: -10, y: -10, z: 0}
   DeathTime: 1
+  AttackCoolTime: 2
+  AttackAngleRange: 30
+  AttackRadius: 2

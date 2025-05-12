@@ -47,7 +47,6 @@ public class EnemyPatrol : IFSM
             SetNextPatrolPoint();
         }
 
-        _enemy.transform.LookAt(_currentPatrolPoint);
         return EEnemyState.Patrol;
     
     }
@@ -58,6 +57,7 @@ public class EnemyPatrol : IFSM
 
     private void SetInitializePoint()
     {
+        _enemy.Agent.isStopped = false;
         for (int i = 0; i < _totalPatrolCount; i++)
         {
             while (true)

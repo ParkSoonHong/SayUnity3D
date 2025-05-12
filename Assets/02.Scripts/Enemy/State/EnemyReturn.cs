@@ -18,12 +18,13 @@ public class EnemyReturn : IFSM
 
     private void Initialize()
     {
-        
+        _startPosition = _enemy.transform.position;
     }
 
     public void Start()
     {
-
+        _enemy.Agent.isStopped = false;
+        _enemy.Agent.SetDestination(_enemy.Player.transform.position);
     }
     public EEnemyState Update()
     {
