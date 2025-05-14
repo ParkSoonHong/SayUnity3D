@@ -27,6 +27,7 @@ public class EnemyController : MonoBehaviour, IDamageAble
 
     public EEnemyState CurrentState => _currentState;
     private Dictionary<EEnemyState, IFSM> _stateMap;
+    public Dictionary<EEnemyState, IFSM> StateMap;
     private Enemy _enemy;
   
     private void Awake()
@@ -38,7 +39,6 @@ public class EnemyController : MonoBehaviour, IDamageAble
     private void Update()
     {
         EEnemyState nextState = _stateMap[_currentState].Update();
-        Debug.Log(nextState);
         if (nextState != _currentState)
         {
             ChangeState(nextState);
@@ -62,6 +62,16 @@ public class EnemyController : MonoBehaviour, IDamageAble
         if (!_stateMap.ContainsKey(EEnemyState.Trace))
         {
             _stateMap.Add(EEnemyState.Trace, new EnemyTrace(_enemy));
+        }
+
+        if (!_stateMap.ContainsKey(EEnemyState.Damaged))
+        {
+            _stateMap.Add(EEnemyState.Damaged, new EnemyDamaged(_enemy));
+        }
+
+        if (!_stateMap.ContainsKey(EEnemyState.Die))
+        {
+            _stateMap.Add(EEnemyState.Die, new EnemyDie(_enemy));
         }
 
         _currentState = EEnemyState.Idle;
@@ -121,7 +131,7 @@ public class EnemyController : MonoBehaviour, IDamageAble
         }
         _enemy.Agent.isStopped = true;
         _enemy.Agent.ResetPath();
-
+       
         // 넉백
         Vector3 dir = (damage.From.transform.position - transform.position) * -1;
         dir.Normalize();
@@ -132,6 +142,7 @@ public class EnemyController : MonoBehaviour, IDamageAble
         if (_enemy.Helath <= 0)
         {
             ChangeState(EEnemyState.Die);
+            _enemy.Animator.SetTrigger("Die");
             return;
         }
 
@@ -139,5 +150,9 @@ public class EnemyController : MonoBehaviour, IDamageAble
        
     }
 
+    public void EndAnim(EEnemyState nextState)
+    {
+        ChangeState(nextState);
+    }
 
 }

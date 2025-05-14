@@ -1,6 +1,6 @@
 using System.Collections;
+using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -20,9 +20,11 @@ public class UI_HUDManager : MonoBehaviour
     public TextMeshProUGUI BulletText;
     public TextMeshProUGUI BombText;
 
+    public List<Image> IconList;
+    public Image Crosshair;
     private void Awake()
     {
-        if(Instance == null)
+        if (Instance == null)
         {
             Instance = this;
         }
@@ -37,10 +39,10 @@ public class UI_HUDManager : MonoBehaviour
         BulletText.text = $"RELOADING";
     }
 
-    public void UpdateBullet(int currentCount,int maxCount)
+    public void UpdateBullet(int currentCount, int maxCount)
     {
         BulletText.text = $"장탄수: {currentCount} / {maxCount}";
-       
+
     }
 
     public void UpdateBomb(int currentCount, int maxCount)
@@ -66,6 +68,27 @@ public class UI_HUDManager : MonoBehaviour
         _hitCoroutine = StartCoroutine(HitEffect());
     }
 
+    public void UpdateSwap(ECharacterType characterType)
+    {
+        if (characterType == ECharacterType.Tanjiro)
+        {
+            Crosshair.gameObject.SetActive(false);
+        }
+        else
+        {
+            Crosshair.gameObject.SetActive(true);
+        }
+
+        for (int i = 0; i < (int)ECharacterType.Count; i++)
+        {
+            if (i == (int)characterType)
+            {
+                IconList[i].gameObject.SetActive(true);
+                continue;
+            }
+            IconList[i].gameObject.SetActive(false);
+        }
+    }
     private IEnumerator HitEffect()
     {
         float elapsed = 0f;
@@ -95,4 +118,3 @@ public class UI_HUDManager : MonoBehaviour
         _hitCoroutine = null;
     }
 }
- 

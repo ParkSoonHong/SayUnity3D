@@ -23,6 +23,7 @@ public class EnemyDamaged : IFSM
     {
         _enemy.Agent.isStopped = true;
         _enemy.Agent.ResetPath();
+        _enemy.Animator.SetTrigger("Damage");
         _damagedTimer = 0;
     }
     public EEnemyState Update()

@@ -4,6 +4,12 @@ using Unity.VisualScripting;
 using UnityEngine;
 using static UnityEditor.Experimental.GraphView.GraphView;
 
+public enum ECharacterType
+{
+    Nezuko,
+    Tanjiro,
+    Count,
+}
 
 public class Player : MonoBehaviour , IDamageAble
 {
@@ -30,14 +36,15 @@ public class Player : MonoBehaviour , IDamageAble
 
     private bool _isRecovery = false;
 
-    public CharacterType CharacterType;
+    public ECharacterType CharacterType;
 
     public PlayerSO PlayerData;
 
     public List<GameObject> TPSPlayerModels;
     public List<GameObject> FPSPlayerModels;
- 
-   // private int _curruntModels = 1;
+
+    public int MaxMonsterCount = 50;
+    public List<Collider> AttackMonsters;
 
     private void Awake()
     {
@@ -56,7 +63,10 @@ public class Player : MonoBehaviour , IDamageAble
         _tpsAnimators = new List<Animator>(TPSPlayerModels.Count);
         _fpsAnimators = new List<Animator>(FPSPlayerModels.Count);
 
-        foreach(GameObject playerModel in TPSPlayerModels)
+        AttackMonsters = new List<Collider>(MaxMonsterCount);
+
+
+        foreach (GameObject playerModel in TPSPlayerModels)
         {
             _tpsAnimators.Add(playerModel.GetComponent<Animator>());
         }
@@ -67,7 +77,7 @@ public class Player : MonoBehaviour , IDamageAble
         }
         CameraModeManager.Instance.ModeHendleEvent += CamerModeCheck;
 
-        PlayerSwap(CharacterType.Nezuko);
+        PlayerSwap(ECharacterType.Nezuko);
     }
 
     public bool UseStamina(float StaminaAmount) // 스테미나를 사용 할수 있는지
@@ -120,18 +130,20 @@ public class Player : MonoBehaviour , IDamageAble
         StartCoroutine(RecoveryStamina(1));
     }
 
-    public void PlayerSwap(CharacterType characterType)
+    public void PlayerSwap(ECharacterType characterType)
     {
         switch (characterType)
         {
-            case CharacterType.Nezuko:
+            case ECharacterType.Nezuko:
+                UI_HUDManager.Instance.UpdateSwap(characterType);
                 PlayerViewCheck(characterType);
                 _characterController.radius = 0.4f;
                 _characterController.height = 1.55f;
                
                 break;
-            case CharacterType.Tanjiro:
+            case ECharacterType.Tanjiro:
                 PlayerViewCheck(characterType);
+                UI_HUDManager.Instance.UpdateSwap(characterType);
                 _characterController.radius = 0.4f;
                 _characterController.height = 1.7f;
                 break;
@@ -144,11 +156,11 @@ public class Player : MonoBehaviour , IDamageAble
         PlayerViewCheck(CharacterType);
     }
 
-    private void PlayerViewCheck(CharacterType characterType)
+    private void PlayerViewCheck(ECharacterType characterType)
     {
         if(CameraModeManager.Instance.CurrentMode == CameraMode.FPS)
         {
-            for(int i=0; i < (int)CharacterType.Count; i++)
+            for(int i=0; i < (int)ECharacterType.Count; i++)
             {
                 if(i == (int)characterType)
                 {
@@ -164,7 +176,7 @@ public class Player : MonoBehaviour , IDamageAble
         }
         else
         {
-            for (int i = 0; i < (int)CharacterType.Count; i++)
+            for (int i = 0; i < (int)ECharacterType.Count; i++)
             {
                 if (i == (int)characterType)
                 {
@@ -177,6 +189,26 @@ public class Player : MonoBehaviour , IDamageAble
                 TPSPlayerModels[i].SetActive(false);
                 FPSPlayerModels[i].SetActive(false);
             }
+        }
+    }
+
+    // 과제용 추후 제거
+    private int currentIndex = 0; // 0 = 첫 번째 무기
+    void Update()
+    {
+        // 마우스 휠 입력 감지 (앞으로 굴리면 양수, 뒤로 굴리면 음수)
+        float scroll = Input.GetAxis("Mouse ScrollWheel");
+        if (scroll > 0f)
+        {
+            // 휠 올리기 → 이전 무기로
+            currentIndex = (currentIndex - 1 + (int)ECharacterType.Count) % (int)ECharacterType.Count;
+            PlayerSwap((ECharacterType)currentIndex);
+        }
+        else if (scroll < 0f)
+        {
+            // 휠 내리기 → 다음 무기로
+            currentIndex = (currentIndex + 1) % (int)ECharacterType.Count;
+            PlayerSwap((ECharacterType)currentIndex);
         }
     }
 }

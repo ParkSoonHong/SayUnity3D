@@ -20,7 +20,8 @@ public class EnemyIdle : IFSM
 
     public void Start() // 시작시 필요
     {
-        
+        _patrolTimer = 0;
+        _enemy.Animator.SetBool("Idle", true);
     }
     public EEnemyState Update()
     {
@@ -33,7 +34,7 @@ public class EnemyIdle : IFSM
         // 미 발견
 
         _patrolTimer += Time.deltaTime;
-        if (_patrolTimer < _patrolTime)
+        if (_patrolTimer > _patrolTime)
         {
             _patrolTimer = 0;
             return EEnemyState.Patrol;
@@ -42,7 +43,8 @@ public class EnemyIdle : IFSM
     }
     public void End()  // 끝낼시 필요
     {
-
+        _patrolTimer = 0;
+        _enemy.Animator.SetBool("Idle", false);
     }
 
 }

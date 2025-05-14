@@ -33,6 +33,8 @@ public class EnemyPatrol : IFSM
     public void Start()
     {
         SetNextPatrolPoint();
+        _enemy.Animator.SetBool("Move", true);
+        Debug.Log("StartPatrol");
     }
 
     public EEnemyState Update()

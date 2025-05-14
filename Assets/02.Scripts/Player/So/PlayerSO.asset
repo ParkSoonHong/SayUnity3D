@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ee44a4974aa48b4183b097769c14947, type: 3}
   m_Name: PlayerSO
   m_EditorClassIdentifier: 
+  RollSpeed: 7
   MoveSpeed: 7
   MaxRunSpeed: 12
   RunAcceleration: 5
@@ -22,6 +23,5 @@ MonoBehaviour:
   Maxhealth: 100
   MoveActionStaminaAmount: 0.05
   RollStaminaAmout: 3
-  BombCount: 3
-  MaxBulletCount: 50
-  MaxThroPower: 30
+  Damage: 35
+  KnockBackpower: 200

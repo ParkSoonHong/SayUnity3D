@@ -1,41 +1,26 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum CharacterType
+
+
+public class PlayerAttack
 {
-    Nezuko,
-    Tanjiro,
-    Count,
-}
-
-public class PlayerAttack 
-{
-
-
     private Player _player;
 
-    public GameObject FirePosition;
-
-    public GameObject WeaponPrefab;
-
-    public GameObject TracerPrefab;
-    private List<GameObject> Weapons;
-
-    // 파이어 관련
-    private int _maxWeaponCount = 10;
-    private float _inithrowPower = 15f;
-    private float _throwPower;
 
     private Camera _mainCamera; // 캐싱을 해라
 
     public int Damage = 10;
     public int WeaponKnockback = 200;
 
-    public float angleRange = 30f;
+    public float angleRange = 60f;
     public float radius = 3f;
 
     private Damage _damage;
+
+    private Collider[] _hitBuffer = new Collider[50];
+    private float _radiusSq;
+    private float _cosThreshold;
 
     public PlayerAttack(Player player)
     {
@@ -44,35 +29,18 @@ public class PlayerAttack
     }
     private void Initialize()
     {
-        _throwPower = _inithrowPower;
-        _damage = new Damage( _player.PlayerData.Damage,_player.gameObject,_player.PlayerData.KnockBackpower);
-      //  WeaponPool();
+        _damage = new Damage(_player.PlayerData.Damage, _player.gameObject, _player.PlayerData.KnockBackpower);
     }
 
-    public void WeaponPool()
-    {
-        Weapons = new List<GameObject>(_maxWeaponCount);
-        for (int i = 0; i < _maxWeaponCount; i++)
-        {
-            GameObject bomb = GameObject.Instantiate(WeaponPrefab);
-            Weapons.Add(bomb);
-            bomb.SetActive(false);
-        }
-        _mainCamera = Camera.main;
-    }
 
-    // 근접 무기 구현
-    // 내 앞 백터 * offset 까지 부채꼴 모양으로 범위 체크
-    // 라이트 + 앞 백터 에서 
-
-    public void Attack(CharacterType characterType)
+    public void Attack(ECharacterType characterType)
     {
         switch (characterType)
         {
-            case CharacterType.Nezuko:
+            case ECharacterType.Nezuko:
                 NezukoAttack();
                 break;
-            case CharacterType.Tanjiro:
+            case ECharacterType.Tanjiro:
                 TanjiroAttack();
                 break;
         }
@@ -82,13 +50,59 @@ public class PlayerAttack
     {
         // 애니메이션 실행 풀링 사용,
         _player.BaseAnimator.SetTrigger("Attack");
+
+
+        Collider[] colliders;
+        colliders = Physics.OverlapSphere(_player.transform.position, radius * 2);
+
+        foreach (Collider collider in colliders)
+        {
+            Vector3 interV = (collider.transform.position - _player.transform.position).normalized;
+
+            // '타겟-나 벡터'와 '내 정면 벡터'를 내적
+            float dot = Vector3.Dot(interV, _player.transform.forward);
+            // 두 벡터 모두 단위 벡터이므로 내적 결과에 cos의 역을 취해서 theta를 구함
+            float theta = Mathf.Acos(dot);
+            // angleRange와 비교하기 위해 degree로 변환
+            float degree = Mathf.Rad2Deg * theta;
+
+            // 시야각 판별
+            if (degree <= angleRange / 2f && collider.TryGetComponent<IDamageAble>(out IDamageAble damageAble) && _player.AttackMonsters.Contains(collider) == false)
+            {
+                _player.AttackMonsters.Add(collider);
+                damageAble.TakeDamage(_damage);
+            }
+        }
     }
 
     public void TanjiroAttack()
     {
-        // 애니메이션 실행,
         _player.BaseAnimator.SetTrigger("Attack");
 
+        int count = Physics.OverlapSphereNonAlloc(
+        _player.transform.position,
+        radius * 2,
+        _hitBuffer
+    );
+
+        for (int i = 0; i < count; i++)
+        {
+            var col = _hitBuffer[i];
+            Vector3 toTarget = col.transform.position - _player.transform.position;
+            if (toTarget.sqrMagnitude > _radiusSq) continue;
+
+            float dot = Vector3.Dot(
+                toTarget.normalized,
+                _player.transform.forward
+            );
+            if (dot < _cosThreshold) continue;
+
+            if (col.TryGetComponent<IDamageAble>(out var dmg))
+                dmg.TakeDamage(_damage);
+        }
+        // 애니메이션 실행,
+
+        /*
         Collider[] colliders;
         colliders = Physics.OverlapSphere(_player.transform.position, radius * 2);
 
@@ -109,8 +123,8 @@ public class PlayerAttack
                 damageAble.TakeDamage(_damage);
             }
         }
-
-      //  _isAttack = false;
+        */
+        //  _isAttack = false;
     }
 
     /*

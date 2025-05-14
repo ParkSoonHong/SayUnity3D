@@ -21,11 +21,9 @@ public class Enemy : MonoBehaviour
 
     public EnemyDataSo EnemyData;
     public UI_Enemy UI_Enemy;
-    // 애니메이션
 
-    public float FindDistance = 7f;
-    public float ReturnDistance = 5f;
-    public float AttackDistance = 2f;
+    public Animator Animator;
+    // 애니메이션
 
     private float _maxHealth = 100;
     private float _health = 0;
@@ -48,7 +46,7 @@ public class Enemy : MonoBehaviour
 
     public bool TryFindTarget()
     {
-        if (Vector3.Distance(transform.position, Player.transform.position) < FindDistance)
+        if (Vector3.Distance(transform.position, Player.transform.position) < EnemyData.FindDistance)
         {
             return true;
         }
@@ -57,7 +55,7 @@ public class Enemy : MonoBehaviour
 
     public bool TryReturnPoint()
     {
-        if (Vector3.Distance(transform.position, Player.transform.position) > ReturnDistance)
+        if (Vector3.Distance(transform.position, Player.transform.position) > EnemyData.ReturnDistance)
         {
             return true;
         }
@@ -66,7 +64,7 @@ public class Enemy : MonoBehaviour
 
     public bool TryAttack()
     {
-        if (Vector3.Distance(transform.position, Player.transform.position) < AttackDistance)
+        if (Vector3.Distance(transform.position, Player.transform.position) < EnemyData.AttackDistance)
         {
             return true;
         }

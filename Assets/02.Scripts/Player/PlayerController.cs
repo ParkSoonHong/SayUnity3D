@@ -18,6 +18,7 @@ public class PlayerController : MonoBehaviour
     private bool _isClimbing = false;
 
     private bool _isEvent = false;
+
     private void Awake()
     {
         _player = GetComponent<Player>();
@@ -40,10 +41,12 @@ public class PlayerController : MonoBehaviour
             _playerAttack.Attack(_player.CharacterType);
             return;
         }
-        // move 를 하다가 벽과 부닿으면 ClimbingMove로 전환
-        // 스테미나를 체크해서 달리기
-        // 스테미나를 체크해서 구르기
-        // 스테미나를 체크해서 벽타기
+
+        if(Input.GetMouseButton(1))
+        {
+            _playerSkill.Skill(_player.CharacterType);
+        }
+  
 
         _playerAction.Jump();
         Climbing();
@@ -92,11 +95,11 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            _player.PlayerSwap(CharacterType.Tanjiro);
+            _player.PlayerSwap(ECharacterType.Tanjiro);
         }
         else if (Input.GetKeyDown(KeyCode.Alpha2))
         {
-            _player.PlayerSwap(CharacterType.Nezuko);
+            _player.PlayerSwap(ECharacterType.Nezuko);
         }
         else if (Input.GetKeyDown(KeyCode.Alpha3))
         {

@@ -23,8 +23,8 @@ public class EnemyReturn : IFSM
 
     public void Start()
     {
+        _enemy.Animator.SetBool("Move", true);
         _enemy.Agent.isStopped = false;
-        _enemy.Agent.SetDestination(_enemy.Player.transform.position);
     }
     public EEnemyState Update()
     {
@@ -41,12 +41,13 @@ public class EnemyReturn : IFSM
             _enemy.Agent.isStopped = true;
             return EEnemyState.Trace;
         }
+        _enemy.Agent.SetDestination(_enemy.Player.transform.position);
 
         return EEnemyState.Return;
     }
     public void End()
     {
-        
+
     }
 
 }

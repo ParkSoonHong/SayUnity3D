@@ -21,7 +21,7 @@ MonoBehaviour:
   MovePointDistance: 0.1
   FindDistance: 7
   ReturnDistance: 5
-  AttackDistance: 2
+  AttackDistance: 4
   TotalPatrolCount: 3
   PatrolTime: 2
   PatrolMaxRange: {x: 10, y: 10, z: 0}

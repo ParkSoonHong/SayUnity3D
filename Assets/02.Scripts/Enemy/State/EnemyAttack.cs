@@ -32,21 +32,21 @@ public class EnemyAttack : IFSM
         _enemy.Agent.isStopped = true;
         _enemy.Agent.ResetPath();
         _isAttack = true;
-        // 애니메이션 실행
+        _enemy.Animator.SetTrigger("Attack");
+        Debug.Log("Attack");
+
     }
 
     public EEnemyState Update()
     {
-         // 공격 애니메이션 실행 중에는 이동하면 안된다. -> 공격 실행중이라면 return 
-
         if(_isAttack)
         {
             return EEnemyState.Attack;
         }
 
-        if (_enemy.TryAttack() == false || AttackDirection() == false) // 상대를 못찾으면 
+        if (_enemy.TryAttack() == false) // 상대를 못찾으면 
         {
-            Debug.Log("Trace");
+            Debug.Log("Attack -> Trace");
             return EEnemyState.Trace;
         }
 
@@ -56,33 +56,9 @@ public class EnemyAttack : IFSM
     {
         _isAttack = false;
         _enemy.Agent.isStopped = false;
-        _enemy.StopCoroutine(Attack_Coroutine());
     }
 
-    // 시간 만큼 기다렸다가 공격 체크
-    // 공격 애니메이션이 끝나면 이벤트 발생
-    // 발생된 이벤트를 통해 어택 종료 -> 스테이트 변경
-    // Start에서 애니메이션 실행 하고 End에만 반환
-    public IEnumerator Attack_Coroutine()
-    {
-        _isAttack = true;
-
-        Collider[] Colliders = Physics.OverlapSphere(_enemy.transform.position, _enemy.AttackDistance);
-        foreach (Collider collider in Colliders)
-        {
-            if (collider.TryGetComponent<IDamageAble>(out IDamageAble damageAble) && collider.CompareTag("Player"))
-            {
-                damageAble.TakeDamage(_damage);
-                break;
-            }
-        }
-        yield return new WaitForSeconds(_attackCoolTime);
-
-        _isAttack = false;
-        yield break;
-    }
-
-    private bool AttackDirection()
+    private bool AttackDirection() // 부채꼴 범위 공격 - 범위 공격 생각 중
     {
         Collider[] colliders;
         colliders = Physics.OverlapSphere(_enemy.transform.position, _attackRadius * 2);
@@ -107,17 +83,5 @@ public class EnemyAttack : IFSM
 
         return false;
     }
-
-    public void OnEnterAnimation()
-    {
-        // 애니메이션이 실제로 재생되기 시작할 때
-        _isAttack = true;
-    }
-
-    // StateMachineBehaviour 종료 시 호출
-    public void OnExitAnimation()
-    {
-        // 애니메이션이 끝났을 때
-        _isAttack = false;
-    }
+   
 }
